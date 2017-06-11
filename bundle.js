@@ -28,8 +28,20 @@ var createClass = function () {
   };
 }();
 
+var rAF = window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame || window.oRequestAnimationFrame || window.msRequestAnimationFrame || function (callback) {
+  window.setTimeout(callback, 1000 / 60);
+};
+
 var isHTMLElement = function isHTMLElement(el) {
   return el instanceof HTMLElement;
+};
+
+var mapStyleToElement = function mapStyleToElement(el, style) {
+  for (var prop in style) {
+    if (prop in el.style) {
+      el.style[prop] = style[prop];
+    }
+  }
 };
 
 var removeChild = function removeChild(el) {
@@ -42,14 +54,30 @@ var LoadingBar = function () {
   function LoadingBar(el, options) {
     classCallCheck(this, LoadingBar);
 
-    this.el = typeof el === 'string' ? document.querySelector(el) : el;
-
+    // define default options
     var defaultOptions = {
       height: '4px',
-      backgroundColor: 'orange'
+      backgroundColor: 'orange',
+      speed: 10
     };
-
+    // set wrapper element if el arg is provided, support css selector
+    this.el = typeof el === 'string' ? document.querySelector(el) : el;
+    // main options used in the library, merge default option & use options
     this.options = Object.assign({}, defaultOptions, options);
+
+    // define barWidth property, limit between 0 and 100;
+    var barWidth = void 0;
+    Object.defineProperty(this, 'barWidth', {
+      get: function get$$1() {
+        return barWidth;
+      },
+      set: function set$$1(value) {
+        if (value < 0) value = 0;
+        if (value > 100) value = 0;
+        barWidth = value;
+      }
+    });
+    this.barWidth = 0;
 
     // define height property of the option
     var barHeight = void 0;
@@ -73,8 +101,12 @@ var LoadingBar = function () {
   createClass(LoadingBar, [{
     key: '_init',
     value: function _init() {
+      // if wrapper supplied, use it, or create a new wrapper which fixed at the top of screen
       !isHTMLElement(this.el) && this._createElement();
       this._createChildElement();
+      this.lastTime = Date.now();
+
+      this._animate();
     }
   }, {
     key: '_createElement',
@@ -89,14 +121,42 @@ var LoadingBar = function () {
       this.el.style.height = this.options.height;
       this.el.style.backgroundColor = 'red';
 
-      console.log('created element!', this.el);
-
       return this;
     }
   }, {
     key: '_createChildElement',
     value: function _createChildElement() {
       removeChild(this.el);
+      this.childEl = document.createElement('div');
+      this.el.appendChild(this.childEl);
+
+      mapStyleToElement(this.childEl, this.options);
+      // overwrite the style 
+      this._renderBar();
+      this.childEl.style.height = '100%';
+    }
+  }, {
+    key: '_renderBar',
+    value: function _renderBar() {
+      this.childEl.style.width = this.barWidth + '%';
+    }
+  }, {
+    key: '_animate',
+    value: function _animate() {
+      var now = Date.now();
+      var dt = (now - this.lastTime) / 1000;
+
+      this.grow(dt);
+      this._renderBar();
+
+      this.lastTime = now;
+
+      rAF(this._animate.bind(this));
+    }
+  }, {
+    key: 'grow',
+    value: function grow(dt) {
+      this.barWidth += this.options.speed * dt;
     }
   }, {
     key: 'start',
