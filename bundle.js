@@ -64,6 +64,8 @@ var LoadingBar = function () {
     this.el = typeof el === 'string' ? document.querySelector(el) : el;
     // main options used in the library, merge default option & use options
     this.options = Object.assign({}, defaultOptions, options);
+    // init animation status;
+    this.isAnimating = false;
 
     // define barWidth property, limit between 0 and 100;
     var barWidth = void 0;
@@ -73,10 +75,12 @@ var LoadingBar = function () {
       },
       set: function set$$1(value) {
         if (value < 0) value = 0;
+        // set to 0 if width touch 100%
         if (value > 100) value = 0;
         barWidth = value;
       }
     });
+    // set barWidth property
     this.barWidth = 0;
 
     // define height property of the option
@@ -93,6 +97,7 @@ var LoadingBar = function () {
       }
     });
 
+    // set height property
     this.options.height = options.height || defaultOptions.height;
 
     this._init();
@@ -105,8 +110,6 @@ var LoadingBar = function () {
       !isHTMLElement(this.el) && this._createElement();
       this._createChildElement();
       this.lastTime = Date.now();
-
-      this._animate();
     }
   }, {
     key: '_createElement',
@@ -120,8 +123,6 @@ var LoadingBar = function () {
       this.el.style.right = 0;
       this.el.style.height = this.options.height;
       this.el.style.backgroundColor = 'red';
-
-      return this;
     }
   }, {
     key: '_createChildElement',
@@ -132,35 +133,64 @@ var LoadingBar = function () {
 
       mapStyleToElement(this.childEl, this.options);
       // overwrite the style 
+      // first render width to 0
       this._renderBar();
       this.childEl.style.height = '100%';
     }
+
+    /**
+     * render the child element width to new width
+     * 
+     * 
+     * @memberof LoadingBar
+     */
+
   }, {
     key: '_renderBar',
     value: function _renderBar() {
       this.childEl.style.width = this.barWidth + '%';
     }
   }, {
-    key: '_animate',
-    value: function _animate() {
+    key: 'grow',
+    value: function grow() {
       var now = Date.now();
       var dt = (now - this.lastTime) / 1000;
 
-      this.grow(dt);
+      this.update(dt);
       this._renderBar();
 
       this.lastTime = now;
 
-      rAF(this._animate.bind(this));
+      // bind context, run animate again
+      if (this.isAnimating) return rAF(this.grow.bind(this));
     }
+
+    /**
+     * grow child element width
+     * 
+     * @param {any} dt control speed of different cpu speed
+     * 
+     * @memberof LoadingBar
+     */
+
   }, {
-    key: 'grow',
-    value: function grow(dt) {
+    key: 'update',
+    value: function update(dt) {
       this.barWidth += this.options.speed * dt;
     }
   }, {
     key: 'start',
-    value: function start() {}
+    value: function start() {
+      if (!this.isAnimating) {
+        this.isAnimating = true;
+        this.grow();
+      }
+    }
+  }, {
+    key: 'pause',
+    value: function pause() {
+      this.isAnimating = false;
+    }
   }, {
     key: 'done',
     value: function done() {}

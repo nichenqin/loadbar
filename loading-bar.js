@@ -33,6 +33,8 @@ class LoadingBar {
     this.el = typeof el === 'string' ? document.querySelector(el) : el;
     // main options used in the library, merge default option & use options
     this.options = Object.assign({}, defaultOptions, options);
+    // init animation status;
+    this.isAnimating = false;
 
     // define barWidth property, limit between 0 and 100;
     let barWidth;
@@ -40,10 +42,12 @@ class LoadingBar {
       get() { return barWidth; },
       set(value) {
         if (value < 0) value = 0;
+        // set to 0 if width touch 100%
         if (value > 100) value = 0;
         barWidth = value;
       }
     });
+    // set barWidth property
     this.barWidth = 0;
 
     // define height property of the option
@@ -58,6 +62,7 @@ class LoadingBar {
       }
     });
 
+    // set height property
     this.options.height = options.height || defaultOptions.height;
 
     this._init();
@@ -68,8 +73,6 @@ class LoadingBar {
     !isHTMLElement(this.el) && this._createElement();
     this._createChildElement();
     this.lastTime = Date.now();
-
-    this._animate();
   }
 
   _createElement() {
@@ -82,8 +85,6 @@ class LoadingBar {
     this.el.style.right = 0;
     this.el.style.height = this.options.height;
     this.el.style.backgroundColor = 'red';
-
-    return this;
   }
 
   _createChildElement() {
@@ -93,32 +94,54 @@ class LoadingBar {
 
     mapStyleToElement(this.childEl, this.options);
     // overwrite the style 
+    // first render width to 0
     this._renderBar();
     this.childEl.style.height = '100%';
   }
 
+  /**
+   * render the child element width to new width
+   * 
+   * 
+   * @memberof LoadingBar
+   */
   _renderBar() {
     this.childEl.style.width = this.barWidth + '%';
   }
 
-  _animate() {
+  grow() {
     const now = Date.now();
     const dt = (now - this.lastTime) / 1000;
 
-    this.grow(dt);
+    this.update(dt);
     this._renderBar();
 
     this.lastTime = now;
 
-    rAF(this._animate.bind(this));
+    // bind context, run animate again
+    if (this.isAnimating) return rAF(this.grow.bind(this));
   }
 
-  grow(dt) {
+  /**
+   * grow child element width
+   * 
+   * @param {any} dt control speed of different cpu speed
+   * 
+   * @memberof LoadingBar
+   */
+  update(dt) {
     this.barWidth += this.options.speed * dt;
   }
 
   start() {
+    if (!this.isAnimating) {
+      this.isAnimating = true;
+      this.grow();
+    }
+  }
 
+  pause() {
+    this.isAnimating = false;
   }
 
   done() {
