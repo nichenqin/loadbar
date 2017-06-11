@@ -32,11 +32,9 @@ var isHTMLElement = function isHTMLElement(el) {
   return el instanceof HTMLElement;
 };
 
-var mapStyleToElement = function mapStyleToElement(el, style) {
-  for (var prop in style) {
-    if (prop in el.style) {
-      el.style[prop] = style[prop];
-    }
+var removeChild = function removeChild(el) {
+  while (el.firstChild) {
+    el.removeChild(el.firstChild);
   }
 };
 
@@ -44,16 +42,16 @@ var LoadingBar = function () {
   function LoadingBar(el, options) {
     classCallCheck(this, LoadingBar);
 
-    console.log(options);
     this.el = typeof el === 'string' ? document.querySelector(el) : el;
 
     var defaultOptions = {
-      height: '30px',
+      height: '4px',
       backgroundColor: 'orange'
     };
 
     this.options = Object.assign({}, defaultOptions, options);
 
+    // define height property of the option
     var barHeight = void 0;
     Object.defineProperty(this.options, 'height', {
       get: function get$$1() {
@@ -76,12 +74,7 @@ var LoadingBar = function () {
     key: '_init',
     value: function _init() {
       !isHTMLElement(this.el) && this._createElement();
-      this._initStyle();
-    }
-  }, {
-    key: '_initStyle',
-    value: function _initStyle() {
-      mapStyleToElement(this.el, this.options);
+      this._createChildElement();
     }
   }, {
     key: '_createElement',
@@ -89,13 +82,21 @@ var LoadingBar = function () {
       this.el = document.createElement('div');
       document.getElementsByTagName('body')[0].appendChild(this.el);
 
-      mapStyleToElement(this.el, this.options);
-
       this.el.style.position = 'fixed';
       this.el.style.top = 0;
       this.el.style.left = 0;
       this.el.style.right = 0;
       this.el.style.height = this.options.height;
+      this.el.style.backgroundColor = 'red';
+
+      console.log('created element!', this.el);
+
+      return this;
+    }
+  }, {
+    key: '_createChildElement',
+    value: function _createChildElement() {
+      removeChild(this.el);
     }
   }, {
     key: 'start',
