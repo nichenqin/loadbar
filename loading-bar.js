@@ -25,9 +25,9 @@ class LoadingBar {
   constructor(el, options) {
     // define default options
     const defaultOptions = {
-      height: '4px',
+      height: '2px',
       backgroundColor: 'orange',
-      speed: 10
+      speed: 100
     };
     // set wrapper element if el arg is provided, support css selector
     this.el = typeof el === 'string' ? document.querySelector(el) : el;
@@ -56,7 +56,7 @@ class LoadingBar {
       get() { return barHeight; },
       set(value) {
         const numValue = parseInt(value);
-        if (numValue > 10) value = 10 + 'px';
+        if (numValue > 5) value = 5 + 'px';
         if (numValue <= 0) value = 1 + 'px';
         barHeight = value;
       }
@@ -109,7 +109,9 @@ class LoadingBar {
     this.childEl.style.width = this.barWidth + '%';
   }
 
-  grow() {
+  growTo(num) {
+    console.log(num);
+    this.isAnimating = true;
     const now = Date.now();
     const dt = (now - this.lastTime) / 1000;
 
@@ -118,8 +120,10 @@ class LoadingBar {
 
     this.lastTime = now;
 
+    if (this.barWidth > num) this.pause();
+
     // bind context, run animate again
-    if (this.isAnimating) return rAF(this.grow.bind(this));
+    if (this.isAnimating) return rAF(this.growTo.bind(this, num));
   }
 
   /**
@@ -136,6 +140,7 @@ class LoadingBar {
   start() {
     if (!this.isAnimating) {
       this.isAnimating = true;
+      this.barWidth = 0;
       this.grow();
     }
   }

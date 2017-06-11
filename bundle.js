@@ -56,9 +56,9 @@ var LoadingBar = function () {
 
     // define default options
     var defaultOptions = {
-      height: '4px',
+      height: '2px',
       backgroundColor: 'orange',
-      speed: 10
+      speed: 100
     };
     // set wrapper element if el arg is provided, support css selector
     this.el = typeof el === 'string' ? document.querySelector(el) : el;
@@ -91,7 +91,7 @@ var LoadingBar = function () {
       },
       set: function set$$1(value) {
         var numValue = parseInt(value);
-        if (numValue > 10) value = 10 + 'px';
+        if (numValue > 5) value = 5 + 'px';
         if (numValue <= 0) value = 1 + 'px';
         barHeight = value;
       }
@@ -151,8 +151,10 @@ var LoadingBar = function () {
       this.childEl.style.width = this.barWidth + '%';
     }
   }, {
-    key: 'grow',
-    value: function grow() {
+    key: 'growTo',
+    value: function growTo(num) {
+      console.log(num);
+      this.isAnimating = true;
       var now = Date.now();
       var dt = (now - this.lastTime) / 1000;
 
@@ -161,8 +163,10 @@ var LoadingBar = function () {
 
       this.lastTime = now;
 
+      if (this.barWidth > num) this.pause();
+
       // bind context, run animate again
-      if (this.isAnimating) return rAF(this.grow.bind(this));
+      if (this.isAnimating) return rAF(this.growTo.bind(this, num));
     }
 
     /**
@@ -183,6 +187,7 @@ var LoadingBar = function () {
     value: function start() {
       if (!this.isAnimating) {
         this.isAnimating = true;
+        this.barWidth = 0;
         this.grow();
       }
     }
