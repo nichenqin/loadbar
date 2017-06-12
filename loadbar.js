@@ -12,9 +12,6 @@ const cAF = window.cancelAnimationFrame || window.webkitCancelAnimationFrame;
 // check if is html element
 const isHTMLElement = el => el instanceof HTMLElement;
 
-// check if has child element
-const hasChildElement = el => !!el.firstChild;
-
 const mapStyleToElement = (el, style) => {
   for (let prop in style) {
     if (prop in el.style) {
@@ -33,8 +30,8 @@ const removeChild = el => {
 // easing animation function
 const easing = (t, b, c, d) => c * t / d + b;
 
-class LoadingBar {
-  constructor(el, options) {
+class Loadbar {
+  constructor(options, el) {
     // set a new options if now options provided
     options = typeof options === 'object' ? options : {};
     // define default options
@@ -127,7 +124,7 @@ class LoadingBar {
    * render the child element width to new width
    * 
    * 
-   * @memberof LoadingBar
+   * @memberof Loadbar
    */
   _renderBar() {
     this.childEl.style.width = this.barWidth + '%';
@@ -139,7 +136,7 @@ class LoadingBar {
    * @param {number} dt control speed of different cpu speed
    * @param {number} num where bar goes
    * 
-   * @memberof LoadingBar
+   * @memberof Loadbar
    */
   _update(dt, num) {
     this.barWidth = easing(dt, this.barWidth, num - this.barWidth, this.duration);
@@ -151,7 +148,7 @@ class LoadingBar {
    * 
    * @param {number} num where the bar goes to
    * 
-   * @memberof LoadingBar
+   * @memberof Loadbar
    */
   _grow(num) {
     const now = Date.now();
@@ -169,6 +166,13 @@ class LoadingBar {
     if (this.isAnimating) return this.rAFId = rAF(this._grow.bind(this, num));
   }
 
+  /**
+   * turn on animation status
+   * 
+   * @returns this
+   * 
+   * @memberof Loadbar
+   */
   _begin() {
     cAF(this.rAFId);
     if (!this.isAnimating) {
@@ -180,6 +184,13 @@ class LoadingBar {
     return this;
   }
 
+  /**
+   * basicly used by done() function
+   * 
+   * @returns this
+   * 
+   * @memberof Loadbar
+   */
   _finish() {
     cAF(this.rAFId);
     this.isAnimating = true;
@@ -192,6 +203,13 @@ class LoadingBar {
     return this;
   }
 
+  /**
+   * fade out animation when done() function called
+   * 
+   * @param {any} el html element
+   * 
+   * @memberof Loadbar
+   */
   _fadeOut(el) {
     if (!el.style.opacity) el.style.opacity = 1;
     el.style.opacity -= 0.1;
@@ -223,4 +241,4 @@ class LoadingBar {
 
 }
 
-export default LoadingBar;
+export default Loadbar;
