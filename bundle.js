@@ -4,6 +4,22 @@
 	(global.LoadingBar = factory());
 }(this, (function () { 'use strict';
 
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {
+  return typeof obj;
+} : function (obj) {
+  return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
+};
+
+
+
+
+
+
+
+
+
+
+
 var classCallCheck = function (instance, Constructor) {
   if (!(instance instanceof Constructor)) {
     throw new TypeError("Cannot call a class as a function");
@@ -27,6 +43,26 @@ var createClass = function () {
     return Constructor;
   };
 }();
+
+
+
+
+
+
+
+var _extends = Object.assign || function (target) {
+  for (var i = 1; i < arguments.length; i++) {
+    var source = arguments[i];
+
+    for (var key in source) {
+      if (Object.prototype.hasOwnProperty.call(source, key)) {
+        target[key] = source[key];
+      }
+    }
+  }
+
+  return target;
+};
 
 var rAF = window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame || window.oRequestAnimationFrame || window.msRequestAnimationFrame || function (callback) {
   window.setTimeout(callback, 1000 / 60);
@@ -54,16 +90,18 @@ var LoadingBar = function () {
   function LoadingBar(el, options) {
     classCallCheck(this, LoadingBar);
 
+    // set a new options if now options provided
+    options = (typeof options === 'undefined' ? 'undefined' : _typeof(options)) === 'object' ? options : {};
     // define default options
     var defaultOptions = {
       height: '2px',
-      backgroundColor: 'orange',
+      backgroundColor: 'blue',
       speed: 100
     };
     // set wrapper element if el arg is provided, support css selector
     this.el = typeof el === 'string' ? document.querySelector(el) : el;
     // main options used in the library, merge default option & use options
-    this.options = Object.assign({}, defaultOptions, options);
+    this.options = _extends({}, defaultOptions, options);
     // init animation status;
     this.isAnimating = false;
 
@@ -153,7 +191,6 @@ var LoadingBar = function () {
   }, {
     key: 'growTo',
     value: function growTo(num) {
-      console.log(num);
       this.isAnimating = true;
       var now = Date.now();
       var dt = (now - this.lastTime) / 1000;
@@ -196,6 +233,9 @@ var LoadingBar = function () {
     value: function pause() {
       this.isAnimating = false;
     }
+  }, {
+    key: 'waiting',
+    value: function waiting() {}
   }, {
     key: 'done',
     value: function done() {}

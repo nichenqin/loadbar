@@ -23,10 +23,12 @@ const removeChild = el => {
 
 class LoadingBar {
   constructor(el, options) {
+    // set a new options if now options provided
+    options = typeof options === 'object' ? options : {};
     // define default options
     const defaultOptions = {
       height: '2px',
-      backgroundColor: 'orange',
+      backgroundColor: 'blue',
       speed: 100
     };
     // set wrapper element if el arg is provided, support css selector
@@ -110,7 +112,6 @@ class LoadingBar {
   }
 
   growTo(num) {
-    console.log(num);
     this.isAnimating = true;
     const now = Date.now();
     const dt = (now - this.lastTime) / 1000;
@@ -147,6 +148,10 @@ class LoadingBar {
 
   pause() {
     this.isAnimating = false;
+  }
+
+  waiting() {
+
   }
 
   done() {
