@@ -42,7 +42,7 @@ class LoadingBar {
     this.options = Object.assign({}, defaultOptions, options);
     // init animation status;
     this.isAnimating = false;
-    this.speed = 800;
+    this.duration = 1.5;
     this.requestId = null;
 
     let barWidth;
@@ -98,7 +98,7 @@ class LoadingBar {
     this.el.style.left = 0;
     this.el.style.right = 0;
     this.el.style.height = this.options.height;
-    this.el.style.backgroundColor = 'red';
+    this.el.style.backgroundColor = 'transparent';
   }
 
   _createChildElement() {
@@ -131,7 +131,7 @@ class LoadingBar {
    * @memberof LoadingBar
    */
   _update(dt, num) {
-    this.barWidth = easing(dt, this.barWidth, (num - this.barWidth), 0.3);
+    this.barWidth = easing(dt, this.barWidth, num - this.barWidth, this.duration);
   }
 
   /**
@@ -149,28 +149,40 @@ class LoadingBar {
     this._update(dt, num);
     this._renderBar();
 
-    this.lastTime = now;
+    // this.lastTime = Date.now();
 
-    if (this.barWidth > num) this.pause();
-
+    const dif = num - this.barWidth;
+    if (dif <= 0.1 && dif > -0.1) this.pause();
     // bind context, run animate again
     if (this.isAnimating) this.requestId = rAF(this._grow.bind(this, num));
   }
 
+  _begin() {
+    if (!this.isAnimating) {
+      cAF(this.requestId);
+      this.isAnimating = true;
+      this.duration = 1.5;
+      this.lastTime = Date.now();
+    }
+  }
+
+  _finish() {
+    if (!this.isAnimating) {
+      this.isAnimating = true;
+      this.duration = 0.3;
+      this.lastTime = Date.now();
+    }
+  }
+
   growTo(num) {
-    cAF(this.requestId);
-    this.isAnimating = true;
-    this.lastTime = Date.now();
+    this._begin();
     this._grow(num);
   }
 
   start() {
-    if (!this.isAnimating) {
-      this.isAnimating = true;
-      this.barWidth = 0;
-      this.lastTime = Date.now();
-      this._grow(30);
-    }
+    this._begin();
+    this.barWidth = 0;
+    this._grow(10);
   }
 
   pause() {
@@ -178,12 +190,9 @@ class LoadingBar {
     this.isAnimating = false;
   }
 
-  loading() {
-
-  }
-
   done() {
-
+    this._finish();
+    this._grow(100);
   }
 
 }

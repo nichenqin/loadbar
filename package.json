@@ -1,15 +1,27 @@
 {
-    "name": "loading-bar",
-    "version": "0.0.1",
-    "description": "loading bar",
-    "main": "loading-bar.js",
+    "name": "loadbar",
+    "version": "0.1.1",
+    "description": "pure javascript progress bar for browser",
+    "main": "loadbar.js",
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1",
+        "build": "rollup -c",
         "dev": "rollup -c -w"
     },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/nichenqin1001/loading-bar.git"
+    },
+    "keywords": [
+        "loader",
+        "loader bar",
+        "progress bar"
+    ],
     "author": "nichenqin",
-    "license": "ISC",
-    "dependencies": {},
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/nichenqin1001/loading-bar/issues"
+    },
     "devDependencies": {
         "babel-plugin-external-helpers": "^6.22.0",
         "babel-plugin-transform-object-assign": "^6.22.0",
@@ -17,6 +29,7 @@
         "rollup": "^0.42.0",
         "rollup-plugin-babel": "^2.7.1",
         "rollup-plugin-node-resolve": "^3.0.0",
+        "rollup-plugin-uglify": "^2.0.1",
         "rollup-watch": "^4.0.0"
     }
 }
