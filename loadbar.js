@@ -53,6 +53,7 @@ class Loadbar {
     this.duration = 1.5;
     // animation id
     this.rAFId = null;
+    this.elementDestroyed = false;
 
     let barWidth;
     Object.defineProperties(this, {
@@ -94,20 +95,26 @@ class Loadbar {
 
   _init() {
     // if wrapper supplied, use it, or create a new wrapper which fixed at the top of screen
-    !isHTMLElement(this.el) && this._createElement();
+    isHTMLElement(this.el) ? this._cssElement() : this._createElement();
     this._createChildElement();
+    this.parentEl = this.el.parentElement;
+  }
+
+  _cssElement() {
+    this.el.style.height = this.options.height;
+    this.el.style.backgroundColor = 'transparent';
   }
 
   _createElement() {
     this.el = document.createElement('div');
     body.appendChild(this.el);
 
+    this._cssElement();
+
     this.el.style.position = 'fixed';
     this.el.style.top = 0;
     this.el.style.left = 0;
     this.el.style.right = 0;
-    this.el.style.height = this.options.height;
-    this.el.style.backgroundColor = 'transparent';
   }
 
   _createChildElement() {
@@ -244,7 +251,8 @@ class Loadbar {
   }
 
   destroy() {
-    body.removeChild(this.el);
+    this.parentEl.removeChild(this.el);
+    this.elementDestroyed = true;
   }
 
   done() {

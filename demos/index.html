@@ -5,6 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>Document</title>
+  <style>
+    .box{
+      margin: 20px;
+      width: 500px;
+      height: 500px;
+      background: greenyellow;
+    }
+  </style>
 </head>
 <body>
   <button class="start">start</button>
@@ -13,6 +21,15 @@
   <button class="loading">loading</button>
   <button class="stop">stop</button>
   <button class="done">done</button>
+  <div class="box">
+    <div class="box__bar"></div>
+  </div>
+    <button class="start-2">start</button>
+  <button class="grow30-2">grow to 30</button>
+  <button class="grow50-2">grow to 50</button>
+  <button class="loading-2">loading</button>
+  <button class="stop-2">stop</button>
+  <button class="done-2">done</button>
   <script src="../loadbar.min.js"></script>
   <script>
     var loadbar = new Loadbar();
@@ -23,6 +40,14 @@
     document.querySelector('.loading').addEventListener('click',function(){loadbar.loading()});
     document.querySelector('.stop').addEventListener('click',function(){loadbar.stop()});
     document.querySelector('.done').addEventListener('click',function(){loadbar.done()});
+    var loadbar2 = new Loadbar({},document.querySelector('.box__bar'));
+    console.log(loadbar2);
+    document.querySelector('.start-2').addEventListener('click',function(){loadbar2.start()});
+    document.querySelector('.grow30-2').addEventListener('click',function(){loadbar2.growTo(30)});
+    document.querySelector('.grow50-2').addEventListener('click',function(){loadbar2.growTo(50)});
+    document.querySelector('.loading-2').addEventListener('click',function(){loadbar2.loading()});
+    document.querySelector('.stop-2').addEventListener('click',function(){loadbar2.stop()});
+    document.querySelector('.done-2').addEventListener('click',function(){loadbar2.done()});
   </script>
 </body>
 </html>
