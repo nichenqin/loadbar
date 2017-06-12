@@ -5,6 +5,8 @@ const rAF = window.requestAnimationFrame ||
   window.msRequestAnimationFrame ||
   function (callback) { window.setTimeout(callback, 1000 / 60); };
 
+const cAF = window.cancelAnimationFrame || window.webkitCancelAnimationFrame;
+
 const isHTMLElement = el => el instanceof HTMLElement;
 
 const mapStyleToElement = (el, style) => {
@@ -41,6 +43,7 @@ class LoadingBar {
     // init animation status;
     this.isAnimating = false;
     this.speed = 800;
+    this.requestId = null;
 
     let barWidth;
     Object.defineProperties(this, {
@@ -52,7 +55,7 @@ class LoadingBar {
         set(value) {
           if (value < 0) value = 0;
           // set to 0 if width touch 100%
-          if (value > 100) value = 0;
+          if (value > 100) value = 100;
           barWidth = value;
         }
       }
@@ -128,7 +131,7 @@ class LoadingBar {
    * @memberof LoadingBar
    */
   _update(dt, num) {
-    this.barWidth = easing(dt, this.barWidth, (num - this.barWidth), 2);
+    this.barWidth = easing(dt, this.barWidth, (num - this.barWidth), 0.3);
   }
 
   /**
@@ -139,8 +142,7 @@ class LoadingBar {
    * 
    * @memberof LoadingBar
    */
-  growTo(num) {
-    this.isAnimating = true;
+  _grow(num) {
     const now = Date.now();
     const dt = (now - this.lastTime) / 1000;
 
@@ -152,7 +154,14 @@ class LoadingBar {
     if (this.barWidth > num) this.pause();
 
     // bind context, run animate again
-    if (this.isAnimating) rAF(this.growTo.bind(this, num));
+    if (this.isAnimating) this.requestId = rAF(this._grow.bind(this, num));
+  }
+
+  growTo(num) {
+    cAF(this.requestId);
+    this.isAnimating = true;
+    this.lastTime = Date.now();
+    this._grow(num);
   }
 
   start() {
@@ -160,11 +169,12 @@ class LoadingBar {
       this.isAnimating = true;
       this.barWidth = 0;
       this.lastTime = Date.now();
-      this.growTo(30);
+      this._grow(30);
     }
   }
 
   pause() {
+    cAF(this.requestId);
     this.isAnimating = false;
   }
 

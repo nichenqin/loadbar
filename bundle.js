@@ -68,6 +68,8 @@ var rAF = window.requestAnimationFrame || window.webkitRequestAnimationFrame || 
   window.setTimeout(callback, 1000 / 60);
 };
 
+var cAF = window.cancelAnimationFrame || window.webkitCancelAnimationFrame;
+
 var isHTMLElement = function isHTMLElement(el) {
   return el instanceof HTMLElement;
 };
@@ -108,6 +110,7 @@ var LoadingBar = function () {
     // init animation status;
     this.isAnimating = false;
     this.speed = 800;
+    this.requestId = null;
 
     var barWidth = void 0;
     Object.defineProperties(this, {
@@ -121,7 +124,7 @@ var LoadingBar = function () {
         set: function set$$1(value) {
           if (value < 0) value = 0;
           // set to 0 if width touch 100%
-          if (value > 100) value = 0;
+          if (value > 100) value = 100;
           barWidth = value;
         }
       }
@@ -209,7 +212,7 @@ var LoadingBar = function () {
   }, {
     key: '_update',
     value: function _update(dt, num) {
-      this.barWidth = easing(dt, this.barWidth, num - this.barWidth, 2);
+      this.barWidth = easing(dt, this.barWidth, num - this.barWidth, 0.3);
     }
 
     /**
@@ -222,9 +225,8 @@ var LoadingBar = function () {
      */
 
   }, {
-    key: 'growTo',
-    value: function growTo(num) {
-      this.isAnimating = true;
+    key: '_grow',
+    value: function _grow(num) {
       var now = Date.now();
       var dt = (now - this.lastTime) / 1000;
 
@@ -236,7 +238,15 @@ var LoadingBar = function () {
       if (this.barWidth > num) this.pause();
 
       // bind context, run animate again
-      if (this.isAnimating) rAF(this.growTo.bind(this, num));
+      if (this.isAnimating) this.requestId = rAF(this._grow.bind(this, num));
+    }
+  }, {
+    key: 'growTo',
+    value: function growTo(num) {
+      cAF(this.requestId);
+      this.isAnimating = true;
+      this.lastTime = Date.now();
+      this._grow(num);
     }
   }, {
     key: 'start',
@@ -245,12 +255,13 @@ var LoadingBar = function () {
         this.isAnimating = true;
         this.barWidth = 0;
         this.lastTime = Date.now();
-        this.growTo(30);
+        this._grow(30);
       }
     }
   }, {
     key: 'pause',
     value: function pause() {
+      cAF(this.requestId);
       this.isAnimating = false;
     }
   }, {
