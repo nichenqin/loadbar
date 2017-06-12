@@ -30,6 +30,8 @@ const removeChild = el => {
 // easing animation function
 const easing = (t, b, c, d) => c * t / d + b;
 
+const body = document.getElementsByTagName('body')[0];
+
 class Loadbar {
   constructor(options, el) {
     // set a new options if now options provided
@@ -98,7 +100,7 @@ class Loadbar {
 
   _createElement() {
     this.el = document.createElement('div');
-    document.getElementsByTagName('body')[0].appendChild(this.el);
+    body.appendChild(this.el);
 
     this.el.style.position = 'fixed';
     this.el.style.top = 0;
@@ -109,7 +111,7 @@ class Loadbar {
   }
 
   _createChildElement() {
-    console.log('create child element');
+    // remove all child element
     removeChild(this.el);
     this.childEl = document.createElement('div');
     this.el.appendChild(this.childEl);
@@ -187,8 +189,8 @@ class Loadbar {
   }
 
   /**
+   * means finish the main work ex: ajax done
    * basicly used by done() function
-   * 
    * @returns this
    * 
    * @memberof Loadbar
@@ -198,10 +200,6 @@ class Loadbar {
     this.isAnimating = true;
     this.duration = 0.3;
     this.lastTime = Date.now();
-    setTimeout(() => {
-      this._fadeOut(this.childEl);
-      this.barWidth = 0;
-    }, 300);
     return this;
   }
 
@@ -216,6 +214,7 @@ class Loadbar {
     if (!el.style.opacity) el.style.opacity = 1;
     el.style.opacity -= 0.1;
     if (el.style.opacity > 0) rAF(this._fadeOut.bind(this, el));
+    return Promise.resolve();
   }
 
   growTo(num) {
@@ -224,17 +223,28 @@ class Loadbar {
 
   start() {
     this.barWidth = 0;
-    this._begin()._grow(10);
+    this.growTo(10);
   }
 
   loading() {
-    this.stop()._begin()._grow(this.barWidth + 0.3 + Math.random() * 0.5);
+    this.pause().growTo(this.barWidth + 0.3 + Math.random() * 0.5);
+  }
+
+  pause() {
+    cAF(this.rAFId);
+    this.isAnimating = false;
+    return this;
   }
 
   stop() {
     cAF(this.rAFId);
     this.isAnimating = false;
-    return this;
+    this._fadeOut(this.childEl)
+      .then(() => setTimeout(() => this.destroy(), 300));
+  }
+
+  destroy() {
+    body.removeChild(this.el);
   }
 
   done() {

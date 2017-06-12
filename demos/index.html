@@ -15,14 +15,14 @@
   <button class="done">done</button>
   <script src="../loadbar.min.js"></script>
   <script>
-    const loadbar = new Loadbar();
+    var loadbar = new Loadbar();
     console.log(loadbar);
-    document.querySelector('.start').addEventListener('click',()=>loadbar.start());
-    document.querySelector('.grow30').addEventListener('click',()=>loadbar.growTo(30));
-    document.querySelector('.grow50').addEventListener('click',()=>loadbar.growTo(50));
-    document.querySelector('.loading').addEventListener('click',()=>loadbar.loading());
-    document.querySelector('.stop').addEventListener('click',()=>loadbar.stop());
-    document.querySelector('.done').addEventListener('click',()=>loadbar.done());
+    document.querySelector('.start').addEventListener('click',function(){loadbar.start()});
+    document.querySelector('.grow30').addEventListener('click',function(){loadbar.growTo(30)});
+    document.querySelector('.grow50').addEventListener('click',function(){loadbar.growTo(50)});
+    document.querySelector('.loading').addEventListener('click',function(){loadbar.loading()});
+    document.querySelector('.stop').addEventListener('click',function(){loadbar.stop()});
+    document.querySelector('.done').addEventListener('click',function(){loadbar.done()});
   </script>
 </body>
 </html>
