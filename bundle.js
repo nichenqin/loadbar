@@ -95,8 +95,7 @@ var LoadingBar = function () {
     // define default options
     var defaultOptions = {
       height: '2px',
-      backgroundColor: 'blue',
-      speed: 100
+      backgroundColor: 'blue'
     };
     // set wrapper element if el arg is provided, support css selector
     this.el = typeof el === 'string' ? document.querySelector(el) : el;
@@ -105,19 +104,26 @@ var LoadingBar = function () {
     // init animation status;
     this.isAnimating = false;
 
-    // define barWidth property, limit between 0 and 100;
+    this.during = 100;
+
     var barWidth = void 0;
-    Object.defineProperty(this, 'barWidth', {
-      get: function get$$1() {
-        return barWidth;
-      },
-      set: function set$$1(value) {
-        if (value < 0) value = 0;
-        // set to 0 if width touch 100%
-        if (value > 100) value = 0;
-        barWidth = value;
+    Object.defineProperties(this, {
+      // constant max width
+      'maxWidth': { value: 100 },
+      // limit bar width
+      'barWidth': {
+        get: function get$$1() {
+          return barWidth;
+        },
+        set: function set$$1(value) {
+          if (value < 0) value = 0;
+          // set to 0 if width touch 100%
+          if (value > 100) value = 0;
+          barWidth = value;
+        }
       }
     });
+
     // set barWidth property
     this.barWidth = 0;
 
@@ -129,6 +135,7 @@ var LoadingBar = function () {
       },
       set: function set$$1(value) {
         var numValue = parseInt(value);
+        // limit max height & min height
         if (numValue > 5) value = 5 + 'px';
         if (numValue <= 0) value = 1 + 'px';
         barHeight = value;
@@ -188,23 +195,6 @@ var LoadingBar = function () {
     value: function _renderBar() {
       this.childEl.style.width = this.barWidth + '%';
     }
-  }, {
-    key: 'growTo',
-    value: function growTo(num) {
-      this.isAnimating = true;
-      var now = Date.now();
-      var dt = (now - this.lastTime) / 1000;
-
-      this.update(dt);
-      this._renderBar();
-
-      this.lastTime = now;
-
-      if (this.barWidth > num) this.pause();
-
-      // bind context, run animate again
-      if (this.isAnimating) return rAF(this.growTo.bind(this, num));
-    }
 
     /**
      * grow child element width
@@ -215,9 +205,36 @@ var LoadingBar = function () {
      */
 
   }, {
-    key: 'update',
-    value: function update(dt) {
-      this.barWidth += this.options.speed * dt;
+    key: '_update',
+    value: function _update(dt) {
+      this.barWidth += this.during * dt;
+    }
+
+    /**
+     * main animate function of the library
+     * control all behavior
+     * 
+     * @param {number} num where the bar goes to
+     * 
+     * @memberof LoadingBar
+     */
+
+  }, {
+    key: 'growTo',
+    value: function growTo(num) {
+      this.isAnimating = true;
+      var now = Date.now();
+      var dt = (now - this.lastTime) / 1000;
+
+      this._update(dt);
+      this._renderBar();
+
+      this.lastTime = now;
+
+      if (this.barWidth > num) this.pause();
+
+      // bind context, run animate again
+      if (this.isAnimating) rAF(this.growTo.bind(this, num));
     }
   }, {
     key: 'start',
