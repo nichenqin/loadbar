@@ -51,7 +51,7 @@ class LoadingBar {
     // animation speed
     this.duration = 1.5;
     // animation id
-    this.requestId = null;
+    this.rAFId = null;
 
     let barWidth;
     Object.defineProperties(this, {
@@ -160,24 +160,28 @@ class LoadingBar {
     this._update(dt, num);
     this._renderBar();
 
-    // this.lastTime = Date.now();
-
     const dif = num - this.barWidth;
+    // if grow to target, turn into loading status
     if (dif <= 0.1 && dif > -0.1) return this.loading();
+    // clear frame if touch max width
+    if (this.barWidth === this.maxWidth && this.isAnimating) return this.stop();
     // bind context, run animate again
-    if (this.isAnimating) this.requestId = rAF(this._grow.bind(this, num));
+    if (this.isAnimating) return this.rAFId = rAF(this._grow.bind(this, num));
   }
 
   _begin() {
+    cAF(this.rAFId);
     if (!this.isAnimating) {
-      cAF(this.requestId);
       this.isAnimating = true;
       this.duration = 1.5;
       this.lastTime = Date.now();
+      return this;
     }
+    return this;
   }
 
   _finish() {
+    cAF(this.rAFId);
     this.isAnimating = true;
     this.duration = 0.3;
     this.lastTime = Date.now();
@@ -185,6 +189,7 @@ class LoadingBar {
       this._fadeOut(this.childEl);
       this.barWidth = 0;
     }, 300);
+    return this;
   }
 
   _fadeOut(el) {
@@ -194,30 +199,26 @@ class LoadingBar {
   }
 
   growTo(num) {
-    this._begin();
-    this._grow(num);
+    this._begin()._grow(num);
   }
 
   start() {
-    this._begin();
     this.barWidth = 0;
-    this._grow(10);
+    this._begin()._grow(10);
   }
 
   loading() {
-    this.pause();
-    this._begin();
-    this._grow(this.barWidth + 0.3 + Math.random() * 0.5);
+    this.stop()._begin()._grow(this.barWidth + 0.3 + Math.random() * 0.5);
   }
 
-  pause() {
-    cAF(this.requestId);
+  stop() {
+    cAF(this.rAFId);
     this.isAnimating = false;
+    return this;
   }
 
   done() {
-    this._finish();
-    this._grow(100);
+    this._finish()._grow(100);
   }
 
 }
