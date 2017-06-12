@@ -136,7 +136,7 @@ class LoadingBar {
   /**
    * grow child element width
    * 
-   * @param {any} dt control speed of different cpu speed
+   * @param {number} dt control speed of different cpu speed
    * @param {number} num where bar goes
    * 
    * @memberof LoadingBar
@@ -147,7 +147,7 @@ class LoadingBar {
 
   /**
    * main animate function of the library
-   * control all behavior
+   * used by almost every function
    * 
    * @param {number} num where the bar goes to
    * 
@@ -163,13 +163,12 @@ class LoadingBar {
     // this.lastTime = Date.now();
 
     const dif = num - this.barWidth;
-    if (dif <= 0.1 && dif > -0.1) this.pause();
+    if (dif <= 0.1 && dif > -0.1) return this.loading();
     // bind context, run animate again
     if (this.isAnimating) this.requestId = rAF(this._grow.bind(this, num));
   }
 
   _begin() {
-    this.childEl.style.opacity = 1;
     if (!this.isAnimating) {
       cAF(this.requestId);
       this.isAnimating = true;
@@ -179,7 +178,6 @@ class LoadingBar {
   }
 
   _finish() {
-    this.childEl.style.opacity = 1;
     this.isAnimating = true;
     this.duration = 0.3;
     this.lastTime = Date.now();
@@ -191,9 +189,7 @@ class LoadingBar {
 
   _fadeOut(el) {
     if (!el.style.opacity) el.style.opacity = 1;
-
     el.style.opacity -= 0.1;
-
     if (el.style.opacity > 0) rAF(this._fadeOut.bind(this, el));
   }
 
@@ -209,8 +205,9 @@ class LoadingBar {
   }
 
   loading() {
+    this.pause();
     this._begin();
-    this._grow(this.barWidth + 0.5 + Math.random());
+    this._grow(this.barWidth + 0.3 + Math.random() * 0.5);
   }
 
   pause() {
