@@ -1,3 +1,4 @@
+// define requestAnimationFrame function
 const rAF = window.requestAnimationFrame ||
   window.webkitRequestAnimationFrame ||
   window.mozRequestAnimationFrame ||
@@ -5,9 +6,14 @@ const rAF = window.requestAnimationFrame ||
   window.msRequestAnimationFrame ||
   function (callback) { window.setTimeout(callback, 1000 / 60); };
 
+// define cancelAnimationFrame function
 const cAF = window.cancelAnimationFrame || window.webkitCancelAnimationFrame;
 
+// check if is html element
 const isHTMLElement = el => el instanceof HTMLElement;
+
+// check if has child element
+const hasChildElement = el => !!el.firstChild;
 
 const mapStyleToElement = (el, style) => {
   for (let prop in style) {
@@ -17,15 +23,15 @@ const mapStyleToElement = (el, style) => {
   }
 };
 
+// remove child node function
 const removeChild = el => {
   while (el.firstChild) {
     el.removeChild(el.firstChild);
   }
 };
 
-var easing = function (t, b, c, d) {
-  return c * t / d + b;
-};
+// easing animation function
+const easing = (t, b, c, d) => c * t / d + b;
 
 class LoadingBar {
   constructor(el, options) {
@@ -42,7 +48,9 @@ class LoadingBar {
     this.options = Object.assign({}, defaultOptions, options);
     // init animation status;
     this.isAnimating = false;
+    // animation speed
     this.duration = 1.5;
+    // animation id
     this.requestId = null;
 
     let barWidth;
@@ -102,6 +110,7 @@ class LoadingBar {
   }
 
   _createChildElement() {
+    console.log('create child element');
     removeChild(this.el);
     this.childEl = document.createElement('div');
     this.el.appendChild(this.childEl);
@@ -111,6 +120,7 @@ class LoadingBar {
     // first render width to 0
     this._renderBar();
     this.childEl.style.height = '100%';
+    this.childEl.style.opacity = '1';
   }
 
   /**
@@ -127,6 +137,7 @@ class LoadingBar {
    * grow child element width
    * 
    * @param {any} dt control speed of different cpu speed
+   * @param {number} num where bar goes
    * 
    * @memberof LoadingBar
    */
@@ -158,6 +169,7 @@ class LoadingBar {
   }
 
   _begin() {
+    this.childEl.style.opacity = 1;
     if (!this.isAnimating) {
       cAF(this.requestId);
       this.isAnimating = true;
@@ -167,11 +179,22 @@ class LoadingBar {
   }
 
   _finish() {
-    if (!this.isAnimating) {
-      this.isAnimating = true;
-      this.duration = 0.3;
-      this.lastTime = Date.now();
-    }
+    this.childEl.style.opacity = 1;
+    this.isAnimating = true;
+    this.duration = 0.3;
+    this.lastTime = Date.now();
+    setTimeout(() => {
+      this._fadeOut(this.childEl);
+      this.barWidth = 0;
+    }, 300);
+  }
+
+  _fadeOut(el) {
+    if (!el.style.opacity) el.style.opacity = 1;
+
+    el.style.opacity -= 0.1;
+
+    if (el.style.opacity > 0) rAF(this._fadeOut.bind(this, el));
   }
 
   growTo(num) {
@@ -183,6 +206,11 @@ class LoadingBar {
     this._begin();
     this.barWidth = 0;
     this._grow(10);
+  }
+
+  loading() {
+    this._begin();
+    this._grow(this.barWidth + 0.5 + Math.random());
   }
 
   pause() {
