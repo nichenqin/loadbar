@@ -37,7 +37,9 @@ class Loadbar {
     // define default options
     const defaultOptions = {
       height: '2px',
-      backgroundColor: 'blue'
+      backgroundColor: 'blue',
+      easeFunction: easing,
+      zIndex: 999
     };
     // set wrapper element if el arg is provided, support css selector
     this.el = typeof el === 'string' ? document.querySelector(el) : el;
@@ -139,7 +141,7 @@ class Loadbar {
    * @memberof Loadbar
    */
   _update(dt, num) {
-    this.barWidth = easing(dt, this.barWidth, num - this.barWidth, this.duration);
+    this.barWidth = this.options.easeFunction(dt, this.barWidth, num - this.barWidth, this.duration);
   }
 
   /**
