@@ -21,6 +21,10 @@ const removeChild = el => {
   }
 };
 
+var easing = function (t, b, c, d) {
+  return c * t / d + b;
+};
+
 class LoadingBar {
   constructor(el, options) {
     // set a new options if now options provided
@@ -36,8 +40,7 @@ class LoadingBar {
     this.options = Object.assign({}, defaultOptions, options);
     // init animation status;
     this.isAnimating = false;
-
-    this.during = 100;
+    this.speed = 800;
 
     let barWidth;
     Object.defineProperties(this, {
@@ -81,7 +84,6 @@ class LoadingBar {
     // if wrapper supplied, use it, or create a new wrapper which fixed at the top of screen
     !isHTMLElement(this.el) && this._createElement();
     this._createChildElement();
-    this.lastTime = Date.now();
   }
 
   _createElement() {
@@ -125,8 +127,8 @@ class LoadingBar {
    * 
    * @memberof LoadingBar
    */
-  _update(dt) {
-    this.barWidth += this.during * dt;
+  _update(dt, num) {
+    this.barWidth = easing(dt, this.barWidth, (num - this.barWidth), 2);
   }
 
   /**
@@ -142,7 +144,7 @@ class LoadingBar {
     const now = Date.now();
     const dt = (now - this.lastTime) / 1000;
 
-    this._update(dt);
+    this._update(dt, num);
     this._renderBar();
 
     this.lastTime = now;
@@ -157,7 +159,8 @@ class LoadingBar {
     if (!this.isAnimating) {
       this.isAnimating = true;
       this.barWidth = 0;
-      this.grow();
+      this.lastTime = Date.now();
+      this.growTo(30);
     }
   }
 
@@ -165,7 +168,7 @@ class LoadingBar {
     this.isAnimating = false;
   }
 
-  waiting() {
+  loading() {
 
   }
 

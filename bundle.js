@@ -86,6 +86,10 @@ var removeChild = function removeChild(el) {
   }
 };
 
+var easing = function easing(t, b, c, d) {
+  return c * t / d + b;
+};
+
 var LoadingBar = function () {
   function LoadingBar(el, options) {
     classCallCheck(this, LoadingBar);
@@ -103,8 +107,7 @@ var LoadingBar = function () {
     this.options = _extends({}, defaultOptions, options);
     // init animation status;
     this.isAnimating = false;
-
-    this.during = 100;
+    this.speed = 800;
 
     var barWidth = void 0;
     Object.defineProperties(this, {
@@ -154,7 +157,6 @@ var LoadingBar = function () {
       // if wrapper supplied, use it, or create a new wrapper which fixed at the top of screen
       !isHTMLElement(this.el) && this._createElement();
       this._createChildElement();
-      this.lastTime = Date.now();
     }
   }, {
     key: '_createElement',
@@ -206,8 +208,8 @@ var LoadingBar = function () {
 
   }, {
     key: '_update',
-    value: function _update(dt) {
-      this.barWidth += this.during * dt;
+    value: function _update(dt, num) {
+      this.barWidth = easing(dt, this.barWidth, num - this.barWidth, 2);
     }
 
     /**
@@ -226,7 +228,7 @@ var LoadingBar = function () {
       var now = Date.now();
       var dt = (now - this.lastTime) / 1000;
 
-      this._update(dt);
+      this._update(dt, num);
       this._renderBar();
 
       this.lastTime = now;
@@ -242,7 +244,8 @@ var LoadingBar = function () {
       if (!this.isAnimating) {
         this.isAnimating = true;
         this.barWidth = 0;
-        this.grow();
+        this.lastTime = Date.now();
+        this.growTo(30);
       }
     }
   }, {
@@ -251,8 +254,8 @@ var LoadingBar = function () {
       this.isAnimating = false;
     }
   }, {
-    key: 'waiting',
-    value: function waiting() {}
+    key: 'loading',
+    value: function loading() {}
   }, {
     key: 'done',
     value: function done() {}
