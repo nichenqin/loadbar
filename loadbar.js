@@ -45,6 +45,7 @@ class Loadbar {
     };
     // set wrapper element if el arg is provided, support css selector
     this.el = typeof el === 'string' ? document.querySelector(el) : el;
+    this.parentEl = !!this.el ? this.el.parentElement : body;
     // main options used in the library, merge default option & use options
     this.options = Object.assign({}, defaultOptions, options);
     // init animation status;
@@ -95,9 +96,9 @@ class Loadbar {
 
   _init() {
     // if wrapper supplied, use it, or create a new wrapper which fixed at the top of screen
+    if (this.elementDestroyed) this.parentEl.appendChild(this.el);
     isHTMLElement(this.el) ? this._cssElement() : this._createElement();
     this._createChildElement();
-    this.parentEl = this.el.parentElement;
   }
 
   _cssElement() {
@@ -185,6 +186,7 @@ class Loadbar {
    * @memberof Loadbar
    */
   _begin() {
+    if (this.elementDestroyed) this._init();
     cAF(this.rAFId);
     if (!this.isAnimating) {
       this.isAnimating = true;
@@ -251,6 +253,7 @@ class Loadbar {
   }
 
   destroy() {
+    this.barWidth = 0;
     this.parentEl.removeChild(this.el);
     this.elementDestroyed = true;
   }

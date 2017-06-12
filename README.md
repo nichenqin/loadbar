@@ -52,8 +52,10 @@ var loadbar = new Loadbar(options, element);
 
   Default: `const easing = (t, b, c, d) => c * t / d + b`
 
+  > [check here](http://gizma.com/easing/) for more information of easing function
+
   #### options.zIndex
-  type: `<number>`
+  type: `<Number>`
   
   config z-index of element if the bar is covered by your header or navbar
 
@@ -62,14 +64,15 @@ var loadbar = new Loadbar(options, element);
   #### Example
 
   ```javascript
-  var easeFunction = function(){
-
-  }
+  var easeInQuart = function (t, b, c, d) {
+    t /= d;
+    return c*t*t*t*t + b;
+  };
   
   var loadbar = new Loadbar({
-    height: '10px' // which will be set to 5px automatically
-    bacgroundColor: '#e4393c',
-    easeFunction: easeFunction,
+    height: '10px', // which will be set to 5px automatically
+    backgroundColor: '#e4393c',
+    easeFunction: easeInQuart,
     zIndex: 1000
   })
   ```
