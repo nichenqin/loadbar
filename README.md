@@ -23,15 +23,18 @@ install package and run `npm install` and use demos/index.html file
 
 ### Basic
 
-```html
+```javascript
 ...
 
-<body>
-  <button>Done</button>
-</body>
+var loadbar = new Loadbar();
+
+loadbar.start();
+loadbar.done();
 
 ...
 ```
+
+### Basic Example
 
 ```javascript
 ...
@@ -40,25 +43,26 @@ var Loadbar = require('loadbar'); // commonjs
 var loadbar = new Loadbar();
 
 window.onload = loadbar.start();
-var btn = document.querySelector('button');
-btn.addEventListener('click', function () { loadbar.done() });
+setTimeout(function() { loadbar.done(); }, 1000);
 
 ...
 ```
 
 If no argument provided, loadbar will create an element which fixed at the top of screen.
 
-### Advanced
+### Advanced Ajax Example
 
 ```javascript
-// The value should be set between 0 and 100.
-// If you set a value out of range it will be set to a valid value.
+
 var axios = require('axios');
+var Loadbar = require('loadbar');
+
+var loadbar = new Loadbar();
 
 ...
 axios.get(url)
   .then(() => { loadbar.start() })
-  .then(() => { loadbar.growTo(80) })
+  .then(() => { loadbar.growTo(80) }) // Value should between 0 and 100.
   .then(() => { loadbar.done(); })
 ...
 ```
@@ -107,7 +111,7 @@ Both two arguments are **not** required.
 
   Default: `const easing = (t, b, c, d) => c * t / d + b`
 
-  *Important:* Every easing function should contains four arguments.
+  **NOTE:** Every easing function should contains four arguments.
   > [check here](http://gizma.com/easing/) for more information of easing function
 
 #### options.zIndex
@@ -160,7 +164,7 @@ Both two arguments are **not** required.
 
 ### element
 
-you can use your own HTML element which is not fixed at the top of screen.
+You can use your own HTML element which is not fixed at the top of screen.
 
 type: `<String>` or `HTMLElement`
 

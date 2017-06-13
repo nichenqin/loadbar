@@ -7,6 +7,76 @@
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>Document</title>
   <style>
+    *{
+      box-sizing: border-box;
+    }
+    html,body{
+      font-family: 'Helvetica','Helvetica Neue';
+      font-size: 16px;
+    }
+    body{
+      background: #ededed;
+    }
+    .container{
+      text-align: center;
+      width: 98%;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+    .title {
+      font-size: 50px;
+      font-weight: 700;
+      margin-top: 90px;
+      margin-bottom: 20px;
+    }
+    .sub-title{
+      font-weight: 500;
+    }
+    .buttons{
+      text-align: left;
+      max-width: 600px;
+      width: 98%;
+      margin: 0 auto;
+    }
+    .item{
+      margin: 0 auto 20px;
+    }
+    .button{
+      color: #fff;
+      background: #333;
+      border: 2px solid #fff;
+      padding-top: 13px;
+      padding-bottom: 13px;
+      width: 40%;
+      min-width: 180px;
+      margin-right: 10px;
+      outline: none;
+      cursor: pointer;
+      transition: all .1s ease;
+      font-weight: 600;
+      font-size: 16px !important;
+      overflow: hidden;
+    }
+    .button>.func{
+      color: #F5B041;
+    }
+    .button:hover{
+      background: #eee;
+      color: #333;
+      border: 2px solid #333;
+    }
+    .button:hover>.func{
+      color: #E74C3C;
+    }
+    .desc{
+      display: inline-block;
+      width: 55%;
+      padding: 0;
+      margin: 0;
+      word-wrap: break-word;
+      word-break: normal;
+      vertical-align: middle;
+    }
     .box {
       margin: 20px;
       width: 500px;
@@ -17,30 +87,74 @@
 </head>
 
 <body>
-  <button class="start">start</button>
-  <button class="grow30">grow to 30</button>
-  <button class="grow50">grow to 50</button>
-  <button class="loading">loading</button>
-  <button class="pause">pause</button>
-  <button class="stop">stop</button>
-  <button class="done">done</button>
+  <div class="container">
+    <main class="main">
+      <h1 class="title">load bar</h1>
+      <h4 class="sub-title">Light weight load bars, no need to import css file.</h4>
+      <pre>
+        <code class="javascript">
+          var loadbar = new Loadbar();
+        </code>
+      </pre>
+      <div class="buttons">
+        <div class="item">
+          <button class="button start">loadbar.<span class="func">start()</span></button>
+          <p class="desc">Will force refresh, start to render bar from 0.</p>
+        </div>
+        <div class="item">
+          <button class="button done">loadbar.<span class="func">done()</span></button>
+          <p class="desc">Will render to 100%, the bar will be removed from document.</p>
+        </div>
+        <div class="item">
+          <button class="button grow30">loadbar.<span class="func">growTo(30)</span></button>
+          <p class="desc">Grow to 30%.</p>
+        </div>
+        <div class="item">
+          <button class="button grow50">loadbar.<span class="func">growTo(50)</span></button>
+          <p class="desc">Grow to 50%.</p>
+        </div>
+        <div class="item">
+          <button class="button grow80">loadbar.<span class="func">growTo(80)</span></button>
+          <p class="desc">Grow to 80%.</p>
+        </div>
+        <div class="item">
+          <button class="button loading">loadbar.<span class="func">loading()</span></button>
+          <p class="desc">Render a little bit, only available when pause.</p>
+        </div>
+        <div class="item">
+          <button class="button pause">loadbar.<span class="func">pause()</span></button>
+          <p class="desc">Stop render, only available when rendering.</p>
+        </div>
+        <div class="item">
+          <button class="button stop">loadbar.<span class="func">stop()</span></button>
+          <p class="desc">Stop render, fade out and remove the bar from document, only available when rendering.</p>
+        </div>
+      </div>      
+    </main>
+    <section class="custom"></section>
+    <footer class="footer"></footer>
+  </div>
+  
   <div class="box">
     <div class="box__bar"></div>
   </div>
-  <button class="start-2">start</button>
-  <button class="grow30-2">grow to 30</button>
-  <button class="grow50-2">grow to 50</button>
-  <button class="loading-2">loading</button>
-  <button class="stop-2">stop</button>
-  <button class="done-2">done</button>
+  <button class="start-2">start</span></button>
+  <button class="grow30-2">grow to 30</span></button>
+  <button class="grow50-2">grow to 50</span></button>
+  <button class="loading-2">loading</span></button>
+  <button class="stop-2">stop</span></button>
+  <button class="done-2">done</span></button>
   <script src="../loadbar.min.js"></script>
   <script>
     var loadbar = new Loadbar();
-    console.log(loadbar);
     window.onload = loadbar.start();
+    setTimeout(function() {
+      loadbar.done();
+    }, 1000);
     document.querySelector('.start').addEventListener('click', function () { loadbar.start() });
     document.querySelector('.grow30').addEventListener('click', function () { loadbar.growTo(30) });
     document.querySelector('.grow50').addEventListener('click', function () { loadbar.growTo(50) });
+    document.querySelector('.grow80').addEventListener('click', function () { loadbar.growTo(80) });
     document.querySelector('.loading').addEventListener('click', function () { loadbar.loading() });
     document.querySelector('.pause').addEventListener('click', function () { loadbar.pause() });
     document.querySelector('.stop').addEventListener('click', function () { loadbar.stop() });

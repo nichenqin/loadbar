@@ -85,9 +85,9 @@ class Loadbar {
       'barWidth': {
         get() { return barWidth; },
         set(value) {
-          if (value < 0) value = 0;
+          if (value <= 0) value = 0;
           // set to 0 if width touch 100%
-          if (value > 100) value = 100;
+          if (value >= 100) value = 100;
           barWidth = value;
         }
       }
@@ -211,12 +211,14 @@ class Loadbar {
     this._update(dt, num)._renderBar();
 
     const dif = num - this.barWidth;
-    const shouldPause = num !== this.maxWidth && this.options.pausePoint - this.barWidth <= 0.1 && this.options.pausePoint - this.barWidth >= -0.1;
+    const shouldLoad = num !== this.maxWidth && dif <= 0.1 && dif > -0.1;
+    const pauseDif = this.options.pausePoint - this.barWidth;
+    const shouldPause = num !== this.maxWidth && pauseDif <= 0.3 && pauseDif >= -0.3;
     // clear frame if touch max width
-    if (dif === 0) return this.stop();
+    if (dif === 0 || this.barWidth === this.maxWidth) return this.stop();
     if (shouldPause) return this.pause();
     // if grow to target, turn into loading status
-    if (num !== this.maxWidth && dif <= 0.1 && dif > -0.1) return this.loading();
+    if (shouldLoad) return this.loading();
     // bind context, run animate again
     if (this.isAnimating) return this.rAFId = rAF(this._grow.bind(this, num));
   }
@@ -289,8 +291,8 @@ class Loadbar {
     if (!this.elementDestroyed) {
       cAF(this.rAFId);
       this.isAnimating = false;
-      this.barWidth = 0;
       this.parentEl.removeChild(this.el);
+      this.barWidth = 0;
       this.elementDestroyed = true;
     }
   }
