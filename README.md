@@ -22,6 +22,8 @@ if no argument provided, loadbar will create an element which fixed at the top o
 loadbar.growTo(80); // The value should be set between 0 and 100, if you set a value out of range it will be set to a valid value
 ```
 
+---
+
 ## Custom Configuration
 
 ```javascript
@@ -30,45 +32,48 @@ var loadbar = new Loadbar(options, element);
 
 ### options
 
-  #### options.height
+#### options.height
+
   type: `<String>`
 
   Height of the bar, limited within 5px.
 
   Default: `2px`
 
-  #### options.backgroundColor
+#### options.backgroundColor
+
   type: `<String>`
 
   Height of the bar, limited within 5px.
 
   Default: `blue`
 
-<!--Todo: custom ease function-->
-  #### options.easeFunction
+#### options.easeFunction
+
   type: `<Function>`
-  
+
   the function of bar easing, you can use your custom function
 
   Default: `const easing = (t, b, c, d) => c * t / d + b`
 
   > [check here](http://gizma.com/easing/) for more information of easing function
 
-  #### options.zIndex
+#### options.zIndex
+
   type: `<Number>`
-  
+
   config z-index of element if the bar is covered by your header or navbar
 
   Default: `999`
-  
-  #### Example
+
+#### options Example
 
   ```javascript
   var easeInQuart = function (t, b, c, d) {
     t /= d;
     return c*t*t*t*t + b;
   };
-  
+
   var loadbar = new Loadbar({
     height: '10px', // which will be set to 5px automatically
     backgroundColor: '#e4393c',
@@ -77,13 +82,15 @@ var loadbar = new Loadbar(options, element);
   })
   ```
 
+---
+
 ### element
 
 you can use your own HTML element which is not fixed at the top of screen.
 
 type: `<String>` or `HTMLElment`
 
-  #### Example
+#### element Example
 
   ```javascript
   var options = {<!-- your custom options -->}

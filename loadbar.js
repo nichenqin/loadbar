@@ -43,6 +43,13 @@ const easing = (t, b, c, d) => c * t / d + b;
 const body = document.getElementsByTagName('body')[0];
 
 class Loadbar {
+  /**
+   * Creates an instance of Loadbar.
+   * @param {object} options custom config
+   * @param {HTMLElement} el HTMLElement
+   * 
+   * @memberof Loadbar
+   */
   constructor(options, el) {
     // set a new options if now options provided
     options = typeof options === 'object' ? options : {};
@@ -107,13 +114,18 @@ class Loadbar {
   }
 
   _init() {
+    this._refresh(true);
     // if wrapper supplied, use it, or create a new wrapper which fixed at the top of screen & add style
     isHTMLElement(this.el) ? this._cssElement() : this._createElement()._cssElement()._cssCustomElement();
     this._createChildElement()._cssChildElement()._renderBar();
   }
 
   _refresh(force) {
-    if (this.elementDestroyed) this._cssChildElement().parentEl.appendChild(this.el);
+    if (this.elementDestroyed) {
+      this._cssChildElement();
+      this.parentEl.appendChild(this.el);
+      this.elementDestroyed = false;
+    };
     if (force) this.barWidth = 0;
     cAF(this.rAFId);
     this.isAnimating = true;
@@ -197,10 +209,10 @@ class Loadbar {
     this._update(dt, num)._renderBar();
 
     const dif = num - this.barWidth;
-    // if grow to target, turn into loading status
-    if (dif <= 0.1 && dif > -0.1) return this.loading();
     // clear frame if touch max width
-    if (this.barWidth === this.maxWidth && this.isAnimating) return this.stop();
+    if (dif === 0) return this.stop();
+    // if grow to target, turn into loading status
+    if (num !== 100 && dif <= 0.1 && dif > -0.1) return this.loading();
     // bind context, run animate again
     if (this.isAnimating) return this.rAFId = rAF(this._grow.bind(this, num));
   }
@@ -208,7 +220,7 @@ class Loadbar {
   /**
    * turn on animation status
    * 
-   * @returns this
+   * @returns Loadbar
    * 
    * @memberof Loadbar
    */
@@ -220,7 +232,7 @@ class Loadbar {
   /**
    * means finish the main work ex: ajax done
    * basicly used by done() function
-   * @returns this
+   * @returns Loadber
    * 
    * @memberof Loadbar
    */
@@ -232,8 +244,7 @@ class Loadbar {
   /**
    * fade out animation when done() function called
    * 
-   * @param {any} el html element
-   * @returns 
+   * @param {HTMLElement} el html element
    * 
    * @memberof Loadbar
    */
@@ -242,10 +253,7 @@ class Loadbar {
     if (el.style.opacity > 0) {
       rAF(this._fadeOut.bind(this, el, callback));
     } else {
-      setTimeout(() => {
-        callback();
-        return this;
-      }, 300);
+      setTimeout(() => { callback(); }, 300);
     }
   }
 
@@ -268,13 +276,17 @@ class Loadbar {
   }
 
   stop() {
-    this.pause()._fadeOut(this.childEl, this.destroy.bind(this));
+    this.isAnimating && this.pause()._fadeOut(this.childEl, this.destroy.bind(this));
   }
 
   destroy() {
-    this.barWidth = 0;
-    this.parentEl.removeChild(this.el);
-    this.elementDestroyed = true;
+    if (!this.elementDestroyed) {
+      cAF(this.rAFId);
+      this.isAnimating = false;
+      this.barWidth = 0;
+      this.parentEl.removeChild(this.el);
+      this.elementDestroyed = true;
+    }
   }
 
   done() {
