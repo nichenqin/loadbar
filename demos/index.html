@@ -1,12 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>Document</title>
   <style>
-    .box{
+    .box {
       margin: 20px;
       width: 500px;
       height: 500px;
@@ -14,6 +15,7 @@
     }
   </style>
 </head>
+
 <body>
   <button class="start">start</button>
   <button class="grow30">grow to 30</button>
@@ -24,7 +26,7 @@
   <div class="box">
     <div class="box__bar"></div>
   </div>
-    <button class="start-2">start</button>
+  <button class="start-2">start</button>
   <button class="grow30-2">grow to 30</button>
   <button class="grow50-2">grow to 50</button>
   <button class="loading-2">loading</button>
@@ -34,28 +36,31 @@
   <script>
     var loadbar = new Loadbar();
     console.log(loadbar);
-    document.querySelector('.start').addEventListener('click',function(){loadbar.start()});
-    document.querySelector('.grow30').addEventListener('click',function(){loadbar.growTo(30)});
-    document.querySelector('.grow50').addEventListener('click',function(){loadbar.growTo(50)});
-    document.querySelector('.loading').addEventListener('click',function(){loadbar.loading()});
-    document.querySelector('.stop').addEventListener('click',function(){loadbar.stop()});
-    document.querySelector('.done').addEventListener('click',function(){loadbar.done()});
+    document.querySelector('.start').addEventListener('click', function () { loadbar.start() });
+    document.querySelector('.grow30').addEventListener('click', function () { loadbar.growTo(30) });
+    document.querySelector('.grow50').addEventListener('click', function () { loadbar.growTo(50) });
+    document.querySelector('.loading').addEventListener('click', function () { loadbar.loading() });
+    document.querySelector('.stop').addEventListener('click', function () { loadbar.stop() });
+    document.querySelector('.done').addEventListener('click', function () { loadbar.done() });
+
     var easeInQuart = function (t, b, c, d) {
-    t /= d;
-    return c*t*t*t*t + b;
-  };
+      t /= d;
+      return c * t * t * t * t + b;
+    };
     var loadbar2 = new Loadbar({
       height: '10px',
       backgroundColor: '#e4393c',
       easeFunction: easeInQuart,
-      zIndex: 1000},document.querySelector('.box__bar'));
+      zIndex: 1000
+    }, document.querySelector('.box__bar'));
     console.log(loadbar2);
-    document.querySelector('.start-2').addEventListener('click',function(){loadbar2.start()});
-    document.querySelector('.grow30-2').addEventListener('click',function(){loadbar2.growTo(30)});
-    document.querySelector('.grow50-2').addEventListener('click',function(){loadbar2.growTo(50)});
-    document.querySelector('.loading-2').addEventListener('click',function(){loadbar2.loading()});
-    document.querySelector('.stop-2').addEventListener('click',function(){loadbar2.stop()});
-    document.querySelector('.done-2').addEventListener('click',function(){loadbar2.done()});
+    document.querySelector('.start-2').addEventListener('click', function () { loadbar2.start() });
+    document.querySelector('.grow30-2').addEventListener('click', function () { loadbar2.growTo(30) });
+    document.querySelector('.grow50-2').addEventListener('click', function () { loadbar2.growTo(50) });
+    document.querySelector('.loading-2').addEventListener('click', function () { loadbar2.loading() });
+    document.querySelector('.stop-2').addEventListener('click', function () { loadbar2.stop() });
+    document.querySelector('.done-2').addEventListener('click', function () { loadbar2.done() });
   </script>
 </body>
+
 </html>

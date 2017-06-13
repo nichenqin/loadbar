@@ -12,6 +12,12 @@ const cAF = window.cancelAnimationFrame || window.webkitCancelAnimationFrame;
 // check if is html element
 const isHTMLElement = el => el instanceof HTMLElement;
 
+/**
+ * map the object to element style
+ * 
+ * @param {HTMLElement} el 
+ * @param {object} style 
+ */
 const mapStyleToElement = (el, style) => {
   for (let prop in style) {
     if (prop in el.style) {
@@ -20,7 +26,11 @@ const mapStyleToElement = (el, style) => {
   }
 };
 
-// remove child node function
+/**
+ * remove all child node of element
+ * 
+ * @param {HTMLElement} el 
+ */
 const removeChild = el => {
   while (el.firstChild) {
     el.removeChild(el.firstChild);
@@ -45,6 +55,7 @@ class Loadbar {
     };
     // set wrapper element if el arg is provided, support css selector
     this.el = typeof el === 'string' ? document.querySelector(el) : el;
+    // handle custom element
     this.parentEl = !!this.el ? this.el.parentElement : body;
     // main options used in the library, merge default option & use options
     this.options = Object.assign({}, defaultOptions, options);
@@ -54,6 +65,7 @@ class Loadbar {
     this.duration = 1.5;
     // animation id
     this.rAFId = null;
+    // mark if this.el is removed from document
     this.elementDestroyed = false;
 
     let barWidth;
@@ -95,27 +107,47 @@ class Loadbar {
   }
 
   _init() {
-    // if wrapper supplied, use it, or create a new wrapper which fixed at the top of screen
-    if (this.elementDestroyed) this.parentEl.appendChild(this.el);
-    isHTMLElement(this.el) ? this._cssElement() : this._createElement();
-    this._createChildElement();
+    // if wrapper supplied, use it, or create a new wrapper which fixed at the top of screen & add style
+    isHTMLElement(this.el) ? this._cssElement() : this._createElement()._cssElement()._cssCustomElement();
+    this._createChildElement()._cssChildElement()._renderBar();
+  }
+
+  _refresh(force) {
+    if (this.elementDestroyed) this._cssChildElement().parentEl.appendChild(this.el);
+    if (force) this.barWidth = 0;
+    cAF(this.rAFId);
+    this.isAnimating = true;
+    this.lastTime = Date.now();
+    return this;
   }
 
   _cssElement() {
     this.el.style.height = this.options.height;
     this.el.style.backgroundColor = 'transparent';
+    return this;
+  }
+
+  _cssCustomElement() {
+    this.el.style.position = 'fixed';
+    this.el.style.top = 0;
+    this.el.style.left = 0;
+    this.el.style.right = 0;
   }
 
   _createElement() {
     this.el = document.createElement('div');
     body.appendChild(this.el);
+    return this;
+  }
 
-    this._cssElement();
+  _cssChildElement() {
+    mapStyleToElement(this.childEl, this.options);
 
-    this.el.style.position = 'fixed';
-    this.el.style.top = 0;
-    this.el.style.left = 0;
-    this.el.style.right = 0;
+    // overwrite the style 
+    // first render width to 0
+    this.childEl.style.height = '100%';
+    this.childEl.style.opacity = '1';
+    return this;
   }
 
   _createChildElement() {
@@ -123,13 +155,7 @@ class Loadbar {
     removeChild(this.el);
     this.childEl = document.createElement('div');
     this.el.appendChild(this.childEl);
-
-    mapStyleToElement(this.childEl, this.options);
-    // overwrite the style 
-    // first render width to 0
-    this._renderBar();
-    this.childEl.style.height = '100%';
-    this.childEl.style.opacity = '1';
+    return this;
   }
 
   /**
@@ -140,18 +166,20 @@ class Loadbar {
    */
   _renderBar() {
     this.childEl.style.width = this.barWidth + '%';
+    return this;
   }
 
   /**
    * grow child element width
    * 
-   * @param {number} dt control speed of different cpu speed
+   * @param {number} dt control speed
    * @param {number} num where bar goes
    * 
    * @memberof Loadbar
    */
   _update(dt, num) {
     this.barWidth = this.options.easeFunction(dt, this.barWidth, num - this.barWidth, this.duration);
+    return this;
   }
 
   /**
@@ -166,8 +194,7 @@ class Loadbar {
     const now = Date.now();
     const dt = (now - this.lastTime) / 1000;
 
-    this._update(dt, num);
-    this._renderBar();
+    this._update(dt, num)._renderBar();
 
     const dif = num - this.barWidth;
     // if grow to target, turn into loading status
@@ -186,14 +213,7 @@ class Loadbar {
    * @memberof Loadbar
    */
   _begin() {
-    if (this.elementDestroyed) this._init();
-    cAF(this.rAFId);
-    if (!this.isAnimating) {
-      this.isAnimating = true;
-      this.duration = 1.5;
-      this.lastTime = Date.now();
-      return this;
-    }
+    this._refresh().duration = 1.5;
     return this;
   }
 
@@ -205,10 +225,7 @@ class Loadbar {
    * @memberof Loadbar
    */
   _finish() {
-    cAF(this.rAFId);
-    this.isAnimating = true;
-    this.duration = 0.3;
-    this.lastTime = Date.now();
+    this._refresh().duration = 0.3;
     return this;
   }
 
@@ -216,14 +233,20 @@ class Loadbar {
    * fade out animation when done() function called
    * 
    * @param {any} el html element
+   * @returns 
    * 
    * @memberof Loadbar
    */
-  _fadeOut(el) {
-    if (!el.style.opacity) el.style.opacity = 1;
+  _fadeOut(el, callback) {
     el.style.opacity -= 0.1;
-    if (el.style.opacity > 0) rAF(this._fadeOut.bind(this, el));
-    return Promise.resolve();
+    if (el.style.opacity > 0) {
+      rAF(this._fadeOut.bind(this, el, callback));
+    } else {
+      setTimeout(() => {
+        callback();
+        return this;
+      }, 300);
+    }
   }
 
   growTo(num) {
@@ -231,8 +254,7 @@ class Loadbar {
   }
 
   start() {
-    this.barWidth = 0;
-    this.growTo(10);
+    this._refresh(true).growTo(10);
   }
 
   loading() {
@@ -246,10 +268,7 @@ class Loadbar {
   }
 
   stop() {
-    cAF(this.rAFId);
-    this.isAnimating = false;
-    this._fadeOut(this.childEl)
-      .then(() => setTimeout(() => this.destroy(), 300));
+    this.pause()._fadeOut(this.childEl, this.destroy.bind(this));
   }
 
   destroy() {

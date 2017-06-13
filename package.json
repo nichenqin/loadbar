@@ -1,6 +1,6 @@
 {
     "name": "loadbar",
-    "version": "0.1.1",
+    "version": "0.1.2",
     "description": "pure javascript progress bar for browser",
     "main": "loadbar.js",
     "scripts": {
@@ -10,7 +10,7 @@
     },
     "repository": {
         "type": "git",
-        "url": "https://github.com/nichenqin1001/loading-bar.git"
+        "url": "https://github.com/nichenqin1001/loadbar.git"
     },
     "keywords": [
         "loader",
@@ -20,7 +20,7 @@
     "author": "nichenqin",
     "license": "MIT",
     "bugs": {
-        "url": "https://github.com/nichenqin1001/loading-bar/issues"
+        "url": "https://github.com/nichenqin1001/loadbar/issues"
     },
     "devDependencies": {
         "babel-plugin-external-helpers": "^6.22.0",
