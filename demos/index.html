@@ -55,12 +55,13 @@
       backgroundColor: '#e4393c',
       easeFunction: easeInQuart,
       zIndex: 1000,
+      startPoint: 50,
       pausePoint: 60
     }, document.querySelector('.box__bar'));
     console.log(loadbar2);
     document.querySelector('.start-2').addEventListener('click', function () { loadbar2.start() });
     document.querySelector('.grow30-2').addEventListener('click', function () { loadbar2.growTo(30) });
-    document.querySelector('.grow50-2').addEventListener('click', function () { loadbar2.growTo(50).pause() });
+    document.querySelector('.grow50-2').addEventListener('click', function () { loadbar2.growTo(50) });
     document.querySelector('.loading-2').addEventListener('click', function () { loadbar2.loading() });
     document.querySelector('.stop-2').addEventListener('click', function () { loadbar2.stop() });
     document.querySelector('.done-2').addEventListener('click', function () { loadbar2.done() });

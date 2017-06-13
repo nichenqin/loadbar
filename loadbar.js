@@ -56,9 +56,10 @@ class Loadbar {
     // define default options
     const defaultOptions = {
       height: '2px',
-      backgroundColor: 'blue',
+      backgroundColor: '#000',
       easeFunction: easing,
       zIndex: 999,
+      startPoint: 30,
       pausePoint: 90
     };
     // set wrapper element if el arg is provided, support css selector
@@ -210,7 +211,7 @@ class Loadbar {
     this._update(dt, num)._renderBar();
 
     const dif = num - this.barWidth;
-    const shouldPause = num !== this.maxWidth && this.barWidth - this.options.pausePoint <= 0.1 && this.barWidth - this.options.pausePoint > -0.1;
+    const shouldPause = num !== this.maxWidth && this.options.pausePoint - this.barWidth <= 0.1 && this.options.pausePoint - this.barWidth >= -0.1;
     // clear frame if touch max width
     if (dif === 0) return this.stop();
     if (shouldPause) return this.pause();
@@ -265,7 +266,7 @@ class Loadbar {
   }
 
   start() {
-    this._refresh(true).growTo(10);
+    this._refresh(true).growTo(this.options.startPoint);
   }
 
   loading() {
@@ -273,8 +274,10 @@ class Loadbar {
   }
 
   pause() {
-    cAF(this.rAFId);
-    this.isAnimating = false;
+    if (this.isAnimating) {
+      cAF(this.rAFId);
+      this.isAnimating = false;
+    }
     return this;
   }
 

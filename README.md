@@ -1,4 +1,4 @@
-# loading-bar
+# loadbar
 
 Light weight progress bar using *vanilla javascript*, **do not** need to import css file.
 
@@ -6,26 +6,41 @@ Light weight progress bar using *vanilla javascript*, **do not** need to import 
 
 ## Installation
 
+```bash
+npm install loadbar --save
+yarn add loadbar
+```
+
+---
+
+## Demo
+
+---
+
 ## Usage
 
 ### Basic
 
 ```html
 ...
+
 <body>
   <button>Done</button>
 </body>
+
 ...
 ```
 
 ```javascript
 ...
+
+var Loadbar = require('loadbar'); // commonjs
 var loadbar = new Loadbar();
 
 window.onload = loadbar.start();
-
 var btn = document.querySelector('button');
 btn.addEventListener('click', function () { loadbar.done() });
+
 ...
 ```
 
@@ -40,6 +55,7 @@ var axios = require('axios');
 
 ...
 axios.get(url)
+  .then(() => { loadbar.start() })
   .then(() => { loadbar.growTo(80) })
   .then(() => { loadbar.done(); })
 ...
@@ -79,7 +95,7 @@ Both two arguments are **not** required.
 
   Color of bar.
 
-  Default: `blue`
+  Default: `#000`
 
 #### options.easeFunction
 
@@ -100,6 +116,14 @@ Both two arguments are **not** required.
 
   Default: `999`
 
+#### options.startPoint
+
+  type: `<Number>`
+
+  Where bar will go when involke start() function.
+
+  Default: `30`
+
 #### options.pausePoint
 
   type: `<Number>`
@@ -107,6 +131,8 @@ Both two arguments are **not** required.
   Where bar will stop waiting next event (ex: loadbar.done()),you can simply set value 100 to avoid pause behavior.
 
   Default: `90`
+
+  **NOTE:** You can only call done() or start() function if the bar touches the pause poinst you have set
 
 #### options Example
 
@@ -122,6 +148,7 @@ Both two arguments are **not** required.
     backgroundColor: '#e4393c',
     easeFunction: easeInQuart,
     zIndex: 1000,
+    startPoint:50,
     pausePoint: 60 // bar will stop at 60%
   })
   ...
@@ -133,7 +160,7 @@ Both two arguments are **not** required.
 
 you can use your own HTML element which is not fixed at the top of screen.
 
-type: `<String>` or `HTMLElment`
+type: `<String>` or `HTMLElement`
 
 #### element Example
 
