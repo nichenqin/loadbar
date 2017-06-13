@@ -15,6 +15,8 @@ yarn add loadbar
 
 ## Demo
 
+install package and run `npm install` and use demos/index.html file
+
 ---
 
 ## Usage
@@ -174,3 +176,5 @@ type: `<String>` or `HTMLElement`
   var bar = document.getElementById('bar')
   var loadbar = new Loadbar(options, bar);
   ```
+
+---
