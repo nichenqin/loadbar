@@ -58,7 +58,8 @@ class Loadbar {
       height: '2px',
       backgroundColor: 'blue',
       easeFunction: easing,
-      zIndex: 999
+      zIndex: 999,
+      pausePoint: 90
     };
     // set wrapper element if el arg is provided, support css selector
     this.el = typeof el === 'string' ? document.querySelector(el) : el;
@@ -209,10 +210,12 @@ class Loadbar {
     this._update(dt, num)._renderBar();
 
     const dif = num - this.barWidth;
+    const shouldPause = num !== this.maxWidth && this.barWidth - this.options.pausePoint <= 0.1 && this.barWidth - this.options.pausePoint > -0.1;
     // clear frame if touch max width
     if (dif === 0) return this.stop();
+    if (shouldPause) return this.pause();
     // if grow to target, turn into loading status
-    if (num !== 100 && dif <= 0.1 && dif > -0.1) return this.loading();
+    if (num !== this.maxWidth && dif <= 0.1 && dif > -0.1) return this.loading();
     // bind context, run animate again
     if (this.isAnimating) return this.rAFId = rAF(this._grow.bind(this, num));
   }
@@ -290,7 +293,7 @@ class Loadbar {
   }
 
   done() {
-    this._finish()._grow(100);
+    this._finish()._grow(this.maxWidth);
   }
 
 }

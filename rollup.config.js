@@ -6,6 +6,7 @@ export default {
   entry: './loadbar.js',
   format: 'umd',
   plugins: [
+    uglify(),
     resolve(),
     babel({
       exclude: 'node_modules/**'

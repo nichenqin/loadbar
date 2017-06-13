@@ -1,5 +1,8 @@
 # loading-bar
-light weight progress bar using pure javascript, do not need to import css file;
+
+Light weight progress bar using *vanilla javascript*, **do not** need to import css file.
+
+---
 
 ## Installation
 
@@ -7,19 +10,47 @@ light weight progress bar using pure javascript, do not need to import css file;
 
 ### Basic
 
-```javascript
-var loadbar = new Loadbar();
-
-loadbar.start();
-loadbar.done();
+```html
+...
+<body>
+  <button>Done</button>
+</body>
+...
 ```
 
-if no argument provided, loadbar will create an element which fixed at the top of screen
+```javascript
+...
+var loadbar = new Loadbar();
+
+window.onload = loadbar.start();
+
+var btn = document.querySelector('button');
+btn.addEventListener('click', function () { loadbar.done() });
+...
+```
+
+If no argument provided, loadbar will create an element which fixed at the top of screen.
 
 ### Advanced
 
 ```javascript
-loadbar.growTo(80); // The value should be set between 0 and 100, if you set a value out of range it will be set to a valid value
+// The value should be set between 0 and 100.
+// If you set a value out of range it will be set to a valid value.
+var axios = require('axios');
+
+...
+axios.get(url)
+  .then(() => { loadbar.growTo(80) })
+  .then(() => { loadbar.done(); })
+...
+```
+
+### Other API
+
+```javascript
+loadbar.pause(); // Bar will stop animating.
+loadbar.stop(); // Bar will fade out and the bar element will be removed from parent(call loadbar.destroy())
+loadbar.loading(); // start to load a little bit
 ```
 
 ---
@@ -29,6 +60,8 @@ loadbar.growTo(80); // The value should be set between 0 and 100, if you set a v
 ```javascript
 var loadbar = new Loadbar(options, element);
 ```
+
+Both two arguments are **not** required.
 
 ### options
 
@@ -44,7 +77,7 @@ var loadbar = new Loadbar(options, element);
 
   type: `<String>`
 
-  Height of the bar, limited within 5px.
+  Color of bar.
 
   Default: `blue`
 
@@ -52,34 +85,46 @@ var loadbar = new Loadbar(options, element);
 
   type: `<Function>`
 
-  the function of bar easing, you can use your custom function
+  Function of bar easing, you can use your custom function.
 
   Default: `const easing = (t, b, c, d) => c * t / d + b`
 
+  *Important:* Every easing function should contains four arguments.
   > [check here](http://gizma.com/easing/) for more information of easing function
 
 #### options.zIndex
 
   type: `<Number>`
 
-  config z-index of element if the bar is covered by your header or navbar
+  Config z-index of element if the bar is covered by your header or navbar.
 
   Default: `999`
+
+#### options.pausePoint
+
+  type: `<Number>`
+
+  Where bar will stop waiting next event (ex: loadbar.done()),you can simply set value 100 to avoid pause behavior.
+
+  Default: `90`
 
 #### options Example
 
   ```javascript
+  ...
   var easeInQuart = function (t, b, c, d) {
     t /= d;
-    return c*t*t*t*t + b;
+    return c * t* t * t * t + b;
   };
 
   var loadbar = new Loadbar({
     height: '10px', // which will be set to 5px automatically
     backgroundColor: '#e4393c',
     easeFunction: easeInQuart,
-    zIndex: 1000
+    zIndex: 1000,
+    pausePoint: 60 // bar will stop at 60%
   })
+  ...
   ```
 
 ---

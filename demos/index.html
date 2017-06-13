@@ -21,6 +21,7 @@
   <button class="grow30">grow to 30</button>
   <button class="grow50">grow to 50</button>
   <button class="loading">loading</button>
+  <button class="pause">pause</button>
   <button class="stop">stop</button>
   <button class="done">done</button>
   <div class="box">
@@ -36,10 +37,12 @@
   <script>
     var loadbar = new Loadbar();
     console.log(loadbar);
+    window.onload = loadbar.start();
     document.querySelector('.start').addEventListener('click', function () { loadbar.start() });
     document.querySelector('.grow30').addEventListener('click', function () { loadbar.growTo(30) });
     document.querySelector('.grow50').addEventListener('click', function () { loadbar.growTo(50) });
     document.querySelector('.loading').addEventListener('click', function () { loadbar.loading() });
+    document.querySelector('.pause').addEventListener('click', function () { loadbar.pause() });
     document.querySelector('.stop').addEventListener('click', function () { loadbar.stop() });
     document.querySelector('.done').addEventListener('click', function () { loadbar.done() });
 
@@ -51,12 +54,13 @@
       height: '10px',
       backgroundColor: '#e4393c',
       easeFunction: easeInQuart,
-      zIndex: 1000
+      zIndex: 1000,
+      pausePoint: 60
     }, document.querySelector('.box__bar'));
     console.log(loadbar2);
     document.querySelector('.start-2').addEventListener('click', function () { loadbar2.start() });
     document.querySelector('.grow30-2').addEventListener('click', function () { loadbar2.growTo(30) });
-    document.querySelector('.grow50-2').addEventListener('click', function () { loadbar2.growTo(50) });
+    document.querySelector('.grow50-2').addEventListener('click', function () { loadbar2.growTo(50).pause() });
     document.querySelector('.loading-2').addEventListener('click', function () { loadbar2.loading() });
     document.querySelector('.stop-2').addEventListener('click', function () { loadbar2.stop() });
     document.querySelector('.done-2').addEventListener('click', function () { loadbar2.done() });
