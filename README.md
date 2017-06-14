@@ -1,8 +1,6 @@
 # loadbar
 
-Light weight progress bar using *vanilla javascript*, **do not** need to import css file.
-
----
+Light weight load bar, vanilla javascript, no css file, no dependency.
 
 ## Installation
 
@@ -11,13 +9,9 @@ npm install loadbar --save
 yarn add loadbar
 ```
 
----
-
 ## Demo
 
-install package and run `npm install` and use demos/index.html file
-
----
+[Live Demo](http://nichenqin.com/loadbar/)
 
 ## Usage
 
@@ -74,8 +68,6 @@ loadbar.pause(); // Bar will stop animating.
 loadbar.stop(); // Bar will fade out and the bar element will be removed from parent(call loadbar.destroy())
 loadbar.loading(); // start to load a little bit
 ```
-
----
 
 ## Custom Configuration
 
@@ -160,8 +152,6 @@ Both two arguments are **not** required.
   ...
   ```
 
----
-
 ### element
 
 You can use your own HTML element which is not fixed at the top of screen.
@@ -182,3 +172,25 @@ type: `<String>` or `HTMLElement`
   ```
 
 ---
+
+MIT License
+
+Copyright (c) [2017] [nichenqin]
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
