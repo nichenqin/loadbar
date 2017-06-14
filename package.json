@@ -1,6 +1,6 @@
 {
     "name": "loadbar",
-    "version": "0.1.4",
+    "version": "0.2.0",
     "description": "pure javascript progress bar for browser",
     "main": "loadbar.js",
     "scripts": {
