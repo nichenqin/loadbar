@@ -195,7 +195,7 @@
         <code class="javascript">
           npm install --save loadbar
           
-          var loadbar = new Loadbar();
+          var loadbar = new Loadbar(); // Default color: #333, set to #E74C3C for clearer display.
 
           loadbar.start();
           loadbar.done();
@@ -279,7 +279,7 @@
     </main>
     <hr>
     <footer class="footer">
-      <p>© 2016 <a href="https://github.com/nichenqin1001">nichenqin</a> - <a href="https://raw.githubusercontent.com/nichenqin1001/loadbar/master/LICENSE">MIT-LICENSE</a></p>
+      <p>© 2017 <a href="https://github.com/nichenqin1001">nichenqin</a> - <a href="https://raw.githubusercontent.com/nichenqin1001/loadbar/master/LICENSE">MIT-LICENSE</a></p>
     </footer>
   </div>
 
@@ -287,7 +287,7 @@
   <script src="./loadbar.min.js"></script>
   <script>
     hljs.initHighlightingOnLoad();
-    var loadbar = new Loadbar();
+    var loadbar = new Loadbar({backgroundColor: '#E74C3C'});
     console.log(loadbar);
     window.onload = loadbar.start();
     setTimeout(function () {
