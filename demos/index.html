@@ -6,69 +6,105 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>Document</title>
+  <link href="https://fonts.googleapis.com/css?family=Roboto+Slab" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/dracula.min.css" />
   <style>
-    *{
+    * {
+      margin: 0;
+      padding: 0;
       box-sizing: border-box;
     }
-    html,body{
-      font-family: 'Helvetica','Helvetica Neue';
+
+    html,
+    body {
+      font-family: 'Roboto Slab', serif;
       font-size: 16px;
     }
-    body{
+
+    body {
       background: #ededed;
     }
-    .container{
+
+    code {
+      font-family: 'Roboto Slab', serif;
+    }
+
+    .hljs {
+      text-align: left;
+      border-radius: 7px;
+      background: #333;
+      line-height: 32px;
+    }
+
+    .container {
       text-align: center;
       width: 98%;
-      max-width: 1000px;
+      max-width: 600px;
       margin: 0 auto;
     }
+
     .title {
-      font-size: 50px;
-      font-weight: 700;
+      font-size: 60px;
+      font-weight: 800;
       margin-top: 90px;
       margin-bottom: 20px;
     }
-    .sub-title{
+
+    .sub-title {
       font-weight: 500;
+      margin-bottom: 20px;
     }
-    .buttons{
+
+    .chapter-title {
       text-align: left;
-      max-width: 600px;
-      width: 98%;
+      font-size: 30px;
+      font-weight: 600;
+    }
+
+    .buttons {
+      text-align: left;
       margin: 0 auto;
     }
-    .item{
+
+    .item {
       margin: 0 auto 20px;
     }
-    .button{
+
+    .button {
+      padding-top: 13px;
+      padding-bottom: 13px;
+      margin-right: 10px;
+      width: 40%;
+      min-width: 180px;
+      font-family: 'Roboto Slab', serif;
+      font-size: 16px !important;
+      letter-spacing: 1px;
       color: #fff;
       background: #333;
       border: 2px solid #fff;
-      padding-top: 13px;
-      padding-bottom: 13px;
-      width: 40%;
-      min-width: 180px;
-      margin-right: 10px;
+      border-radius: 7px;
       outline: none;
+      overflow: hidden;
       cursor: pointer;
       transition: all .1s ease;
-      font-weight: 600;
-      font-size: 16px !important;
-      overflow: hidden;
     }
-    .button>.func{
-      color: #F5B041;
+
+    .button>.func {
+      color: #8be9fd;
     }
-    .button:hover{
+
+    .button:hover {
       background: #eee;
       color: #333;
+      font-weight: 600;
       border: 2px solid #333;
     }
-    .button:hover>.func{
+
+    .button:hover>.func {
       color: #E74C3C;
     }
-    .desc{
+
+    .desc {
       display: inline-block;
       width: 55%;
       padding: 0;
@@ -77,11 +113,34 @@
       word-break: normal;
       vertical-align: middle;
     }
+
     .box {
-      margin: 20px;
-      width: 500px;
-      height: 500px;
-      background: greenyellow;
+      width: 100%;
+      position: relative;
+      border: 5px solid #8be9fd;
+    }
+
+    .box .tag {
+      position: absolute;
+      top: 0;
+      left: 0;
+      line-height: 16px;
+      padding: 5px 0;
+      min-width: 70px;
+      text-align: center;
+      border-right: 5px solid #8be9fd;
+      border-bottom: 5px solid #8be9fd;
+      border-bottom-right-radius: 5px;
+      color: #333;
+      background: #8be9fd;
+    }
+
+    .box .bar {
+      position: absolute;
+      top: 0;
+      right: 0;
+      left: 0;
+      display: block;
     }
   </style>
 </head>
@@ -90,10 +149,14 @@
   <div class="container">
     <main class="main">
       <h1 class="title">load bar</h1>
-      <h4 class="sub-title">Light weight load bars, no need to import css file.</h4>
+      <h4 class="sub-title">Light weight load bars, vanilla javascript, no need to import css file.</h4>
+      <h3 class="chapter-title">Usage</h3>
       <pre>
         <code class="javascript">
           var loadbar = new Loadbar();
+
+          loadbar.start();
+          loadbar.done();
         </code>
       </pre>
       <div class="buttons">
@@ -129,26 +192,47 @@
           <button class="button stop">loadbar.<span class="func">stop()</span></button>
           <p class="desc">Stop render, fade out and remove the bar from document, only available when rendering.</p>
         </div>
-      </div>      
+      </div>
+      <h3 class="chapter-title">Custom Configuration</h3>
+      <pre>
+        <code class="javascript box">
+        <span class="tag">.box</span>
+        <span class="bar"></span>
+          var easeInQuart = function (t, b, c, d) {
+            t /= d;
+            return c * t * t * t * t + b;
+          };
+          var loadbar2 = new Loadbar({
+            height: '10px', // invalid value, will be set to 5px automatically;
+            backgroundColor: '#e4393c',
+            easeFunction: easeInQuart,
+            zIndex: 1000,
+            startPoint: 50,
+            // Bar will stop at 60%,
+            // if touch pause point,
+            // you can only call start() or done() function
+            pausePoint: 60 
+          }, document.querySelector('.box .bar'));
+        </code>
+      </pre>
     </main>
     <section class="custom"></section>
     <footer class="footer"></footer>
   </div>
-  
-  <div class="box">
-    <div class="box__bar"></div>
-  </div>
+
   <button class="start-2">start</span></button>
   <button class="grow30-2">grow to 30</span></button>
   <button class="grow50-2">grow to 50</span></button>
   <button class="loading-2">loading</span></button>
   <button class="stop-2">stop</span></button>
   <button class="done-2">done</span></button>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
   <script src="../loadbar.min.js"></script>
   <script>
+    hljs.initHighlightingOnLoad();
     var loadbar = new Loadbar();
     window.onload = loadbar.start();
-    setTimeout(function() {
+    setTimeout(function () {
       loadbar.done();
     }, 1000);
     document.querySelector('.start').addEventListener('click', function () { loadbar.start() });
@@ -171,7 +255,7 @@
       zIndex: 1000,
       startPoint: 50,
       pausePoint: 60
-    }, document.querySelector('.box__bar'));
+    }, document.querySelector('.box').querySelector('.bar'));
     console.log(loadbar2);
     document.querySelector('.start-2').addEventListener('click', function () { loadbar2.start() });
     document.querySelector('.grow30-2').addEventListener('click', function () { loadbar2.growTo(30) });

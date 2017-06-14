@@ -112,14 +112,21 @@ class Loadbar {
     // set height property
     this.options.height = options.height || defaultOptions.height;
 
+    // render bar
     this._init();
   }
 
   _init() {
+    // force refresh
     this._refresh(true);
     // if wrapper supplied, use it, or create a new wrapper which fixed at the top of screen & add style
-    isHTMLElement(this.el) ? this._cssElement() : this._createElement()._cssElement()._cssCustomElement();
-    this._createChildElement()._cssChildElement()._renderBar();
+    isHTMLElement(this.el)
+      ? this._cssElement()
+      : this._createElement()._cssElement()._cssCustomElement();
+
+    this._createChildElement();
+    isHTMLElement(this.childEl) && this._cssChildElement();
+    this._renderBar();
   }
 
   _refresh(force) {
@@ -136,16 +143,22 @@ class Loadbar {
   }
 
   _cssElement() {
-    this.el.style.height = this.options.height;
-    this.el.style.backgroundColor = 'transparent';
+    const elStyle = {
+      height: this.options.height,
+      backgroundColor: 'transparent'
+    };
+    mapStyleToElement(this.el, elStyle);
     return this;
   }
 
   _cssCustomElement() {
-    this.el.style.position = 'fixed';
-    this.el.style.top = 0;
-    this.el.style.left = 0;
-    this.el.style.right = 0;
+    const cusElStyle = {
+      position: 'fixed',
+      top: 0,
+      left: 0,
+      right: 0
+    };
+    mapStyleToElement(this.el, cusElStyle);
   }
 
   _createElement() {
@@ -156,18 +169,20 @@ class Loadbar {
 
   _cssChildElement() {
     mapStyleToElement(this.childEl, this.options);
-
     // overwrite the style 
     // first render width to 0
-    this.childEl.style.height = '100%';
-    this.childEl.style.opacity = '1';
+    const childStyle = {
+      height: '100%',
+      opacity: 1
+    };
+    mapStyleToElement(this.childEl, childStyle);
     return this;
   }
 
   _createChildElement() {
     // remove all child element
     removeChild(this.el);
-    this.childEl = document.createElement('div');
+    this.childEl = this.childEl || document.createElement('div');
     this.el.appendChild(this.childEl);
     return this;
   }
