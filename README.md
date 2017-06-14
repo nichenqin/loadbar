@@ -91,7 +91,7 @@ Both two arguments are **not** required.
 
   type: `<String>`
 
-  Height of the bar, limited within 5px.
+  Height of the bar, limited within 4px.
 
   Default: `2px`
 
@@ -150,7 +150,7 @@ Both two arguments are **not** required.
   };
 
   var loadbar = new Loadbar({
-    height: '10px', // which will be set to 5px automatically
+    height: '10px', // which will be set to 4px automatically
     backgroundColor: '#e4393c',
     easeFunction: easeInQuart,
     zIndex: 1000,

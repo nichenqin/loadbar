@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>Document</title>
+  <title>loadbar</title>
   <link href="https://fonts.googleapis.com/css?family=Roboto+Slab" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/dracula.min.css" />
   <style>
@@ -27,6 +27,30 @@
 
     code {
       font-family: 'Roboto Slab', serif;
+    }
+
+    hr {
+      display: block;
+      height: 1px;
+      border: 0;
+      border-top: 1px solid #ccc;
+      margin: 30px 0;
+      padding: 0;
+    }
+
+    a {
+      color: #333;
+      border-bottom: 2px dotted #333;
+      text-decoration: none;
+    }
+
+    a:hover {
+      border-bottom-style: solid;
+    }
+
+    footer {
+      text-align: left;
+      padding-bottom: 40px;
     }
 
     .hljs {
@@ -116,7 +140,10 @@
 
     .box {
       width: 100%;
+      margin: 15px 0;
+      background: #333;
       position: relative;
+      border-radius: 7px;
       border: 5px solid #8be9fd;
     }
 
@@ -140,7 +167,19 @@
       top: 0;
       right: 0;
       left: 0;
+      margin: '0 auto'
+    }
+
+    .box .buttons {
+      position: absolute;
+      right: 50px;
+      top: 50px;
+    }
+
+    .box .buttons .button {
       display: block;
+      margin-bottom: 20px;
+      width: calc(50% - 20px);
     }
   </style>
 </head>
@@ -148,11 +187,13 @@
 <body>
   <div class="container">
     <main class="main">
-      <h1 class="title">load bar</h1>
-      <h4 class="sub-title">Light weight load bars, vanilla javascript, no need to import css file.</h4>
+      <h1 class="title"> -- load bar -- </h1>
+      <h4 class="sub-title">Light weight load bar, vanilla javascript, no css file, no dependency.</h4>
       <h3 class="chapter-title">Usage</h3>
       <pre>
         <code class="javascript">
+          npm install --save loadbar
+          
           var loadbar = new Loadbar();
 
           loadbar.start();
@@ -181,12 +222,12 @@
           <p class="desc">Grow to 80%.</p>
         </div>
         <div class="item">
-          <button class="button loading">loadbar.<span class="func">loading()</span></button>
-          <p class="desc">Render a little bit, only available when pause.</p>
-        </div>
-        <div class="item">
           <button class="button pause">loadbar.<span class="func">pause()</span></button>
           <p class="desc">Stop render, only available when rendering.</p>
+        </div>
+        <div class="item">
+          <button class="button loading">loadbar.<span class="func">loading()</span></button>
+          <p class="desc">Render a little bit, only available when pause.</p>
         </div>
         <div class="item">
           <button class="button stop">loadbar.<span class="func">stop()</span></button>
@@ -194,43 +235,59 @@
         </div>
       </div>
       <h3 class="chapter-title">Custom Configuration</h3>
-      <pre>
-        <code class="javascript box">
+      <div class="box">
         <span class="tag">.box</span>
-        <span class="bar"></span>
-          var easeInQuart = function (t, b, c, d) {
-            t /= d;
-            return c * t * t * t * t + b;
-          };
-          var loadbar2 = new Loadbar({
-            height: '10px', // invalid value, will be set to 5px automatically;
-            backgroundColor: '#e4393c',
-            easeFunction: easeInQuart,
-            zIndex: 1000,
-            startPoint: 50,
-            // Bar will stop at 60%,
-            // if touch pause point,
-            // you can only call start() or done() function
-            pausePoint: 60 
-          }, document.querySelector('.box .bar'));
-        </code>
-      </pre>
+        <div class="bar"></div>
+        <pre>
+          <code class="javascript">
+            /* custom bar style */
+            .box .bar {
+              position: absolute;
+              top: 0;
+              right: 0;
+              left: 0;
+            }
+            var easeInQuart = function (t, b, c, d) {
+                t /= d;
+                return c * t * t * t * t + b;
+              };
+              var loadbar2 = new Loadbar({
+                height: '10px', // invalid value, will be set to 4px automatically;
+                backgroundColor: '#e4393c',
+                easeFunction: easeInQuart,
+                zIndex: 1000, // default: 999
+                startPoint: 50, // default: 30
+                
+                // Bar will stop at 60%,
+                // once the bar touches pause point,
+                // you can only call start() or done() function
+                pausePoint: 60, // default: 90
+                margin: '0 auto' // You can set all types of css style in options
+              },
+              // If the element does not exists,
+              // the bar will be fixed to the top,
+              // configs will remain.
+              document.querySelector('.box').querySelector('.bar'));
+          </code>
+        </pre>
+        <div class="buttons">
+          <button class="start-2 button">loadbar2.<span class="func">start()</span></button>
+          <button class="done-2 button">loadbar2.<span class="func">done()</span></button>
+        </div>
+      </div>
     </main>
-    <section class="custom"></section>
-    <footer class="footer"></footer>
+    <hr>
+    <footer class="footer">
+      <p>© 2016 <a href="https://github.com/nichenqin1001">nichenqin</a> - <a href="https://raw.githubusercontent.com/nichenqin1001/loadbar/master/LICENSE">MIT-LICENSE</a></p>
+    </footer>
   </div>
 
-  <button class="start-2">start</span></button>
-  <button class="grow30-2">grow to 30</span></button>
-  <button class="grow50-2">grow to 50</span></button>
-  <button class="loading-2">loading</span></button>
-  <button class="stop-2">stop</span></button>
-  <button class="done-2">done</span></button>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
   <script src="../loadbar.min.js"></script>
   <script>
     hljs.initHighlightingOnLoad();
     var loadbar = new Loadbar();
+    console.log(loadbar);
     window.onload = loadbar.start();
     setTimeout(function () {
       loadbar.done();
@@ -250,18 +307,15 @@
     };
     var loadbar2 = new Loadbar({
       height: '10px',
-      backgroundColor: '#e4393c',
+      backgroundColor: '#F7DC6F',
       easeFunction: easeInQuart,
       zIndex: 1000,
       startPoint: 50,
-      pausePoint: 60
+      pausePoint: 60,
+      margin: '0 auto'
     }, document.querySelector('.box').querySelector('.bar'));
     console.log(loadbar2);
     document.querySelector('.start-2').addEventListener('click', function () { loadbar2.start() });
-    document.querySelector('.grow30-2').addEventListener('click', function () { loadbar2.growTo(30) });
-    document.querySelector('.grow50-2').addEventListener('click', function () { loadbar2.growTo(50) });
-    document.querySelector('.loading-2').addEventListener('click', function () { loadbar2.loading() });
-    document.querySelector('.stop-2').addEventListener('click', function () { loadbar2.stop() });
     document.querySelector('.done-2').addEventListener('click', function () { loadbar2.done() });
   </script>
 </body>

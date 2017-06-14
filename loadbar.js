@@ -103,7 +103,7 @@ class Loadbar {
       set(value) {
         const numValue = parseInt(value);
         // limit max height & min height
-        if (numValue > 5) value = 5 + 'px';
+        if (numValue > 4) value = 4 + 'px';
         if (numValue <= 0) value = 1 + 'px';
         barHeight = value;
       }
@@ -124,9 +124,7 @@ class Loadbar {
       ? this._cssElement()
       : this._createElement()._cssElement()._cssCustomElement();
 
-    this._createChildElement();
-    isHTMLElement(this.childEl) && this._cssChildElement();
-    this._renderBar();
+    this._createChildElement()._cssChildElement()._renderBar();
   }
 
   _refresh(force) {
@@ -182,7 +180,7 @@ class Loadbar {
   _createChildElement() {
     // remove all child element
     removeChild(this.el);
-    this.childEl = this.childEl || document.createElement('div');
+    this.childEl = document.createElement('div');
     this.el.appendChild(this.childEl);
     return this;
   }
