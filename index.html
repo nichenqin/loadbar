@@ -289,12 +289,13 @@
   <script>
     hljs.initHighlightingOnLoad();
     var loadbar = new Loadbar({ backgroundColor: '#E74C3C' });
-    console.log(loadbar);
-    window.addEventListener('pageshow', function (e) {
+    function renderBar() {
       loadbar.start();
-      setTimeout(function () {
-        loadbar.done();
-      }, 1000);
+      setTimeout(function () { loadbar.done(); }, 1000);
+    }
+    window.onload = renderBar;
+    document.addEventListener('visibilitychange', function () {
+      if (!document.hidden) { renderBar(); }
     })
 
     document.querySelector('.start').addEventListener('click', function () { loadbar.start() });
