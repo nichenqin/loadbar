@@ -5,7 +5,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>loadbar</title>
+  <title>Loadbar</title>
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
   <link href="https://fonts.googleapis.com/css?family=Roboto+Slab" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/dracula.min.css" />
   <style>
@@ -188,7 +189,7 @@
   <a href="https://github.com/nichenqin1001/loadbar"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/38ef81f8aca64bb9a64448d0d70f1308ef5341ab/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6461726b626c75655f3132313632312e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png"></a>
   <div class="container">
     <main class="main">
-      <h1 class="title"> -- load bar -- </h1>
+      <h1 class="title"> -- Load bar -- </h1>
       <h4 class="sub-title">Light weight load bar, vanilla javascript, no css file, no dependency.</h4>
       <h3 class="chapter-title">Usage</h3>
       <pre>
@@ -287,12 +288,15 @@
   <script src="./loadbar.min.js"></script>
   <script>
     hljs.initHighlightingOnLoad();
-    var loadbar = new Loadbar({backgroundColor: '#E74C3C'});
+    var loadbar = new Loadbar({ backgroundColor: '#E74C3C' });
     console.log(loadbar);
-    window.onload = loadbar.start();
-    setTimeout(function () {
-      loadbar.done();
-    }, 1000);
+    window.addEventListener('pageshow', function (e) {
+      loadbar.start();
+      setTimeout(function () {
+        loadbar.done();
+      }, 1000);
+    })
+
     document.querySelector('.start').addEventListener('click', function () { loadbar.start() });
     document.querySelector('.grow30').addEventListener('click', function () { loadbar.growTo(30) });
     document.querySelector('.grow50').addEventListener('click', function () { loadbar.growTo(50) });
