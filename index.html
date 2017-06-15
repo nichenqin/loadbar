@@ -196,7 +196,8 @@
         <code class="javascript">
           npm install --save loadbar
           
-          var loadbar = new Loadbar(); // Default color: #333, set to #E74C3C for clearer display.
+          // Default color: #333, set to #E74C3C for clearer display.
+          var loadbar = new Loadbar(); 
 
           loadbar.start();
           loadbar.done();
@@ -252,24 +253,24 @@
             var easeInQuart = function (t, b, c, d) {
                 t /= d;
                 return c * t * t * t * t + b;
-              };
-              var loadbar2 = new Loadbar({
-                height: '10px', // invalid value, will be set to 4px automatically;
-                backgroundColor: '#e4393c',
-                easeFunction: easeInQuart,
-                zIndex: 1000, // default: 999
-                startPoint: 50, // default: 30
-                
-                // Bar will stop at 60%,
-                // once the bar touches pause point,
-                // you can only call start() or done() function
-                pausePoint: 60, // default: 90
-                margin: '0 auto' // You can set all types of css style in options
-              },
-              // If the element does not exists,
-              // the bar will be fixed to the top,
-              // configs will remain.
-              document.querySelector('.box').querySelector('.bar'));
+            };
+            var loadbar2 = new Loadbar({
+              height: '10px', // invalid value, will be set to 4px automatically;
+              backgroundColor: '#e4393c',
+              easeFunction: easeInQuart,
+              zIndex: 1000, // default: 999
+              startPoint: 50, // default: 30
+              
+              // Bar will stop at 60%,
+              // once the bar touches pause point,
+              // you can only call start() or done() function
+              pausePoint: 60, // default: 90
+              margin: '0 auto' // You can set all types of css style in options
+            },
+            // If the element does not exists,
+            // the bar will be fixed to the top,
+            // configs will remain.
+            document.querySelector('.box').querySelector('.bar'));
           </code>
         </pre>
         <div class="buttons">
