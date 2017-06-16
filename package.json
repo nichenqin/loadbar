@@ -2,7 +2,7 @@
     "name": "loadbar",
     "version": "0.2.1",
     "description": "pure javascript progress bar for browser",
-    "main": "loadbar.js",
+    "main": "loadbar.min.js",
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1",
         "build": "rollup -c",
